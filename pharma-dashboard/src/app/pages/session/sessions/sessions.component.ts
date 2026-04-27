@@ -35,39 +35,59 @@ export class SessionsComponent implements OnInit {
     this.loadOrdonnance();
     this.loadStock();
   }
-  loadStock(): void {
-  // ⚠️ adapte URL selon ton API
+ loadStock(): void {
   this.stockService.getMedicaments()
-    .subscribe(data => this.medicamentsStock = data);
+    .subscribe(data => {
+      this.medicamentsStock = data;
+
+      // 🔥 re-remplir après chargement du stock
+      if (this.ordonnance) {
+        this.prefillDistributions();
+      }
+    });
 }
   loadSessions(): void {
     this.sessionService.getSessions(this.ordonnanceId).subscribe(s => this.sessions = s);
   }
 
-  loadOrdonnance(): void {
-    this.ordonnanceService.getOrdonnance(this.ordonnanceId).subscribe(o => {
-      this.ordonnance = o;
-      this.ordonnance.medicamentsGrouped = this.prepareMedicaments(o.medicaments);
-    });
-  }
+ loadOrdonnance(): void {
+  this.ordonnanceService.getOrdonnance(this.ordonnanceId).subscribe(o => {
+    this.ordonnance = o;
+    this.ordonnance.medicamentsGrouped = this.prepareMedicaments(o.medicaments);
 
-  prepareMedicaments(medicaments: any[]): any[] {
-    const grouped: { [key: string]: { nom: string, posologies: string[], count: number } } = {};
+    this.prefillDistributions(); // 🔥 ICI
+  });
+}
 
-    medicaments.forEach(m => {
-      const nom = m.medicamentStock ? m.medicamentStock.nom : m.nomManuel;
-      if (!grouped[nom]) {
-        grouped[nom] = { nom, posologies: [], count: 0 };
-      }
-      grouped[nom].count++;
-      if (m.posologie) {
-        grouped[nom].posologies.push(m.posologie);
-      }
-    });
+prepareMedicaments(medicaments: any[]): any[] {
+  const grouped: { [key: string]: any } = {};
 
-    return Object.values(grouped);
-  }
+  medicaments.forEach(m => {
 
+    const nom = m.medicamentStock
+      ? m.medicamentStock.nom
+      : m.nomManuel;
+
+    if (!grouped[nom]) {
+      grouped[nom] = {
+        nom,
+        posologie: 1,
+        unite: m.medicamentStock?.unite || '—', // 🔥 ICI
+        count: 0
+      };
+    }
+
+    grouped[nom].count++;
+    grouped[nom].posologie = m.posologie || 1;
+
+    // 🔥 toujours garder unité si stock existe
+    if (m.medicamentStock?.unite) {
+      grouped[nom].unite = m.medicamentStock.unite;
+    }
+  });
+
+  return Object.values(grouped);
+}
   addDistribution(): void {
   this.distributionsManuelles.push({
     medicamentStockId: null,
@@ -115,4 +135,60 @@ traiterArrivee(): void {
     this.loadSessions();
   });
 }
+
+prefillDistributions(): void {
+  if (!this.ordonnance?.medicamentsGrouped) return;
+
+  this.distributionsManuelles = this.ordonnance.medicamentsGrouped.map(m => {
+    const stockMatch = this.medicamentsStock.find(s =>
+      s.nom.toLowerCase() === m.nom.toLowerCase()
+    );
+
+    return {
+      searchText: m.nom,
+      selectedMedicament: stockMatch || null,
+      medicamentStockId: stockMatch ? stockMatch.id : null,
+      quantite: 1,
+      filteredMedicaments: [],
+      ordonnanceMedicament: m // 🔥 IMPORTANT
+    };
+  });
+  this.calculerQuantites(); // 🔥 IMPORTANT
+this.calculerDateRdv();
+}
+calculerDateRdv(): void {
+  if (!this.joursDistributionManuel) return;
+
+  const today = new Date();
+  today.setDate(today.getDate() + this.joursDistributionManuel);
+
+  this.dateProchainRdvManuel = today.toISOString().split('T')[0];
+}
+
+
+
+calculerQuantites(): void {
+  if (!this.distributionsManuelles?.length) return;
+
+  this.distributionsManuelles = this.distributionsManuelles.map(d => {
+
+    const medicament = d.ordonnanceMedicament;
+    if (!medicament) return d;
+
+    const prisesParJour = medicament.posologie || 1;
+
+    return {
+      ...d,
+      quantite: prisesParJour * this.joursDistributionManuel
+    };
+  });
+}
+onJoursChange(): void {
+    console.log("Jours changé:", this.joursDistributionManuel);
+
+  this.calculerDateRdv();
+  this.calculerQuantites();
+}
+
+
 }

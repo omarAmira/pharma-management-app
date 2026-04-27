@@ -9,8 +9,11 @@
 
       <div class="form-group">
         <label>Jours de distribution</label>
-        <input type="number" [(ngModel)]="joursDistributionManuel" placeholder="Ex: 7">
-      </div>
+<input 
+  type="number" 
+  [(ngModel)]="joursDistributionManuel" 
+  (ngModelChange)="onJoursChange()"
+>      </div>
 
       <div class="form-group">
         <label>Date prochain RDV</label>
@@ -49,8 +52,11 @@
       </div>
 
       <!-- QUANTITE -->
-      <input type="number" [(ngModel)]="d.quantite" min="1" placeholder="Qté">
-
+<input 
+  type="number" 
+  [ngModel]="d.quantite"
+  (ngModelChange)="d.quantite = $event"
+>
       <!-- DELETE -->
       <button class="btn-danger" (click)="removeDistribution(i)">✖</button>
 
@@ -86,16 +92,15 @@
       <thead>
         <tr>
           <th>Nom</th>
-          <th>Occurrences</th>
           <th>Posologie</th>
+          <th>Unité</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let m of ordonnance.medicamentsGrouped">
           <td>{{ m.nom }}</td>
-          <td>{{ m.count }}</td>
-          <td>{{ m.posologies.join(', ') || '—' }}</td>
-        </tr>
+          <td>{{ m.posologie || 1 }}</td>
+        <td>{{ m.unite || '—' }}</td>        </tr>
       </tbody>
     </table>
 
