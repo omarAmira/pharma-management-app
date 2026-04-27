@@ -1,149 +1,549 @@
+// ============================================================
+// PharmaDash — Sessions Page SCSS
+// Matches dark green sidebar (#1a3a2e / #0f2318) aesthetic
+// ============================================================
+
+// ── Design Tokens ──────────────────────────────────────────
+$green-darkest:  #0f2318;
+$green-dark:     #1a3a2e;
+$green-mid:      #2e6651;
+$green-accent:   #3dbe8c;
+$green-light:    #a8f0d0;
+
+$bg-page:        #f0f4f2;
+$bg-card:        #ffffff;
+$border:         #dde8e3;
+
+$text-primary:   #0f2318;
+$text-secondary: #4a6b5e;
+$text-muted:     #8aaa9a;
+
+$status-attente: #f59e0b;
+$status-retard:  #ef4444;
+$status-done:    #3dbe8c;
+
+$radius-card:    16px;
+$radius-input:   10px;
+$radius-badge:   20px;
+$shadow-card:    0 2px 12px rgba(15, 35, 24, 0.08);
+$shadow-hover:   0 6px 24px rgba(15, 35, 24, 0.14);
+
+// ── Google Font ─────────────────────────────────────────────
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=DM+Sans:wght@400;500&display=swap');
+
+// ── Base ────────────────────────────────────────────────────
 .sessions-page {
-  padding: 20px;
-  background: #f5f7fb;
+  font-family: 'DM Sans', sans-serif;
+  background: $bg-page;
   min-height: 100vh;
-  font-family: Arial, sans-serif;
+  padding: 28px 32px;
+  color: $text-primary;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
-/* CARD BASE */
+// ── Cards ───────────────────────────────────────────────────
 .card {
-  background: white;
-  border-radius: 14px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+  background: $bg-card;
+  border-radius: $radius-card;
+  border: 1px solid $border;
+  box-shadow: $shadow-card;
+  padding: 28px;
+  transition: box-shadow 0.2s;
+
+  &:hover { box-shadow: $shadow-hover; }
 }
 
-/* FORM */
-.form-grid {
+.card-label {
+  font-family: 'Sora', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: $green-accent;
+  margin-bottom: 6px;
+}
+
+// ── Top Grid: 2 columns ─────────────────────────────────────
+.top-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 24px;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// ── Patient Card ────────────────────────────────────────────
+.patient-card {
+  .patient-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .patient-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, $green-dark, $green-mid);
+    color: #fff;
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    letter-spacing: 0.02em;
+  }
+
+  .patient-info h2 {
+    font-family: 'Sora', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: $text-primary;
+    margin: 0 0 4px;
+  }
+
+  .dossier-badge {
+    font-size: 12px;
+    background: $bg-page;
+    border: 1px solid $border;
+    color: $text-secondary;
+    padding: 2px 10px;
+    border-radius: $radius-badge;
+  }
+}
+
+.meta-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: $text-secondary;
+  background: $bg-page;
+  border-radius: 8px;
+  padding: 8px 12px;
+
+  .meta-icon { font-size: 15px; }
+}
+
+.section-title {
+  font-family: 'Sora', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: $text-muted;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 10px;
+}
+
+.meds-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+
+  thead tr {
+    background: $bg-page;
+    th {
+      padding: 8px 12px;
+      text-align: left;
+      font-weight: 600;
+      color: $text-secondary;
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      &:first-child { border-radius: 8px 0 0 8px; }
+      &:last-child  { border-radius: 0 8px 8px 0; }
+    }
+  }
+
+  tbody tr {
+    border-bottom: 1px solid $border;
+    &:last-child { border-bottom: none; }
+
+    td {
+      padding: 10px 12px;
+      color: $text-primary;
+    }
+  }
+}
+
+.unit-badge {
+  font-size: 11px;
+  font-weight: 600;
+  background: rgba($green-accent, 0.12);
+  color: $green-mid;
+  padding: 2px 8px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+// ── Form Card ───────────────────────────────────────────────
+.form-card {
+  h3 {
+    font-family: 'Sora', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: $text-primary;
+    margin: 0 0 20px;
+  }
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+
+  @media (max-width: 600px) { grid-template-columns: 1fr; }
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
+  gap: 6px;
 
-  input {
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-    outline: none;
-
-    &:focus {
-      border-color: #1976d2;
-      box-shadow: 0 0 0 3px rgba(25,118,210,0.15);
-    }
+  label {
+    font-size: 12px;
+    font-weight: 600;
+    color: $text-secondary;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
   }
 }
 
-/* SEARCH */
-.search-box {
-  position: relative;
-  width: 60%;
-
-  input {
-    width: 100%;
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-  }
-
-  .dropdown {
-    position: absolute;
-    background: white;
-    width: 100%;
-    max-height: 180px;
-    overflow-y: auto;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    z-index: 10;
-
-    .dropdown-item {
-      padding: 8px;
-      cursor: pointer;
-
-      &:hover {
-        background: #f0f4ff;
-      }
-    }
-  }
-}
-
-/* ROW */
-.distribution-row {
+.input-wrapper {
   display: flex;
-  gap: 10px;
   align-items: center;
-  margin-bottom: 10px;
-}
+  gap: 8px;
+  background: $bg-page;
+  border: 1.5px solid $border;
+  border-radius: $radius-input;
+  padding: 0 14px;
+  transition: border-color 0.2s, box-shadow 0.2s;
 
-.selected {
-  background: #e3f2fd;
-  padding: 6px 10px;
-  border-radius: 6px;
-}
-
-/* BUTTONS */
-.btn-primary {
-  background: #1976d2;
-  color: white;
-  padding: 10px 14px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-
-  &:hover {
-    background: #125aa0;
+  &:focus-within {
+    border-color: $green-accent;
+    box-shadow: 0 0 0 3px rgba($green-accent, 0.15);
+    background: #fff;
   }
+
+  .input-icon { font-size: 15px; opacity: 0.7; flex-shrink: 0; }
+
+  input {
+    border: none;
+    background: transparent;
+    outline: none;
+    width: 100%;
+    padding: 10px 0;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: $text-primary;
+
+    &::placeholder { color: $text-muted; }
+  }
+}
+
+// ── Distributions ────────────────────────────────────────────
+.distributions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.distribution-row {
+  background: $bg-page;
+  border: 1px solid $border;
+  border-radius: 12px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.drug-search {
+  position: relative;
+
+  .search-input { background: #fff; }
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0; right: 0;
+  background: #fff;
+  border: 1.5px solid $border;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(15,35,24,0.12);
+  z-index: 100;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.dropdown-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover { background: rgba($green-accent, 0.08); }
+
+  .drug-name { font-weight: 500; font-size: 13.5px; }
+  .drug-stock {
+    font-size: 11.5px;
+    color: $text-muted;
+    background: $bg-page;
+    padding: 2px 8px;
+    border-radius: 6px;
+  }
+}
+
+.selected-tag {
+  font-size: 12.5px;
+  color: $green-mid;
+  font-weight: 600;
+  background: rgba($green-accent, 0.1);
+  border-radius: 6px;
+  padding: 4px 10px;
+  align-self: flex-start;
+}
+
+.qty-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  label {
+    font-size: 12px;
+    font-weight: 600;
+    color: $text-secondary;
+    white-space: nowrap;
+  }
+
+  .qty-input {
+    width: 120px;
+    background: #fff;
+    flex-shrink: 0;
+  }
+}
+
+.btn-remove {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(#ef4444, 0.1);
+  color: #ef4444;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  transition: background 0.2s;
+
+  &:hover { background: rgba(#ef4444, 0.2); }
+}
+
+// ── Form Actions ─────────────────────────────────────────────
+.form-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding-top: 4px;
+}
+
+// ── Buttons ──────────────────────────────────────────────────
+.btn-primary {
+  background: linear-gradient(135deg, $green-dark, $green-mid);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+
+  &:hover { opacity: 0.92; transform: translateY(-1px); }
+  &:active { transform: translateY(0); }
 }
 
 .btn-secondary {
-  background: #eee;
-  padding: 10px 14px;
-  border-radius: 8px;
-  border: none;
+  background: transparent;
+  color: $green-dark;
+  border: 1.5px solid $green-mid;
+  border-radius: 10px;
+  padding: 9px 20px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover { background: rgba($green-mid, 0.08); }
 }
 
 .btn-outline {
-  border: 1px solid #1976d2;
-  color: #1976d2;
-  padding: 8px 12px;
-  border-radius: 8px;
   background: transparent;
-}
-
-.btn-danger {
-  background: #ff4d4f;
-  color: white;
-  border: none;
-  padding: 6px 10px;
-  border-radius: 6px;
-}
-
-/* SESSION CARDS */
-.session-card {
-  background: white;
-  padding: 15px;
+  color: $green-mid;
+  border: 1.5px dashed $green-accent;
   border-radius: 10px;
-  margin-bottom: 12px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  padding: 9px 18px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  font-size: 13.5px;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover { background: rgba($green-accent, 0.08); }
 }
 
-.session-header {
+// ── Sessions Card ────────────────────────────────────────────
+.sessions-card {
+  .sessions-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 24px;
+
+    h2 {
+      font-family: 'Sora', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: $text-primary;
+      margin: 0 0 4px;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: $text-muted;
+      margin: 0;
+    }
+  }
+
+  .sessions-actions {
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+}
+
+.alert-message {
+  background: rgba($green-accent, 0.1);
+  border-left: 4px solid $green-accent;
+  color: $green-dark;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+// ── Session Grid ─────────────────────────────────────────────
+.session-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.session-card {
+  border: 1.5px solid $border;
+  border-radius: 12px;
+  padding: 18px;
+  background: $bg-page;
+  transition: box-shadow 0.2s, transform 0.2s;
+
+  &:hover {
+    box-shadow: $shadow-hover;
+    transform: translateY(-2px);
+  }
+
+  &.status-en_attente { border-left: 4px solid $status-attente; }
+  &.status-en_retard  { border-left: 4px solid $status-retard; }
+  &.status-done,
+  &.status-distribue  { border-left: 4px solid $status-done; }
+}
+
+.session-top {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
 }
 
-/* STATUS */
-.status {
-  padding: 4px 8px;
-  border-radius: 6px;
-  font-size: 12px;
+.session-id {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  color: $text-primary;
+}
 
-  &.en_attente { background: #fff3cd; }
-  &.effectuee { background: #d4edda; }
-  &.en_retard { background: #f8d7da; }
-  &.terminee { background: #e2e3e5; }
+.status-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: $radius-badge;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+
+  &.en_attente {
+    background: rgba($status-attente, 0.12);
+    color: darken($status-attente, 15%);
+  }
+  &.en_retard {
+    background: rgba($status-retard, 0.12);
+    color: $status-retard;
+  }
+  &.distribue, &.done {
+    background: rgba($status-done, 0.12);
+    color: darken($status-done, 10%);
+  }
+}
+
+.session-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  color: $text-secondary;
+  margin-bottom: 14px;
+}
+
+.session-drugs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.drug-chip {
+  font-size: 12px;
+  background: #fff;
+  border: 1px solid $border;
+  border-radius: 8px;
+  padding: 4px 10px;
+  color: $text-secondary;
+
+  strong {
+    color: $green-dark;
+    font-weight: 700;
+  }
 }

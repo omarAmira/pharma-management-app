@@ -190,5 +190,7 @@ onJoursChange(): void {
   this.calculerQuantites();
 }
 
-
+removeDistribution(index: number): void {
+  this.distributionsManuelles.splice(index, 1);
+}
 }

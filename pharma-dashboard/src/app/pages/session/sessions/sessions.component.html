@@ -1,153 +1,181 @@
 <div class="sessions-page">
 
-  <!-- ================= MANUEL FORM ================= -->
-  <div class="manuel-form card">
+  <!-- ====== TOP: TWO COLUMN LAYOUT ====== -->
+  <div class="top-grid">
 
-    <h3>Créer une Session Manuelle</h3>
-
-    <div class="form-grid">
-
-      <div class="form-group">
-        <label>Jours de distribution</label>
-<input 
-  type="number" 
-  [(ngModel)]="joursDistributionManuel" 
-  (ngModelChange)="onJoursChange()"
->      </div>
-
-      <div class="form-group">
-        <label>Date prochain RDV</label>
-        <input type="date" [(ngModel)]="dateProchainRdvManuel">
+    <!-- LEFT: ORDONNANCE DETAILS -->
+    <div class="card patient-card" *ngIf="ordonnance">
+      <div class="card-label">Ordonnance</div>
+      <div class="patient-header">
+        <div class="patient-avatar">
+          {{ ordonnance.patient.prenom[0] }}{{ ordonnance.patient.nom[0] }}
+        </div>
+        <div class="patient-info">
+          <h2>{{ ordonnance.patient.prenom }} {{ ordonnance.patient.nom }}</h2>
+          <span class="dossier-badge">📁 {{ ordonnance.patient.numeroDossier }}</span>
+        </div>
       </div>
 
+      <div class="meta-grid">
+        <div class="meta-item">
+          <span class="meta-icon">📞</span>
+          <span>{{ ordonnance.patient.numeroTlf }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-icon">📅</span>
+          <span>{{ ordonnance.dateOrdonnance }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-icon">⏰</span>
+          <span>RDV: {{ ordonnance.dateRdv }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-icon">⏳</span>
+          <span>{{ ordonnance.dureeTraitement }} mois</span>
+        </div>
+      </div>
+
+      <div class="section-title">Médicaments prescrits</div>
+      <table class="meds-table">
+        <thead>
+          <tr>
+            <th>Médicament</th>
+            <th>Posologie</th>
+            <th>Unité</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let m of ordonnance.medicamentsGrouped">
+            <td>{{ m.nom }}</td>
+            <td>{{ m.posologie || 1 }}</td>
+            <td><span class="unit-badge">{{ m.unite || '—' }}</span></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
-    <h4>Médicaments à distribuer</h4>
+    <!-- RIGHT: MANUAL SESSION FORM -->
+    <div class="card form-card">
+      <div class="card-label">Nouvelle Session</div>
+      <h3>Créer une Session Manuelle</h3>
 
-    <div *ngFor="let d of distributionsManuelles; let i = index" class="distribution-row">
-
-      <!-- 🔥 SEARCH MEDICAMENT -->
-      <div class="search-box">
-        <input
-          type="text"
-          placeholder="Rechercher médicament..."
-          [(ngModel)]="d.searchText"
-          (input)="filterMedicaments(d)"
-        />
-
-        <div class="dropdown" *ngIf="d.filteredMedicaments?.length > 0">
-          <div
-            class="dropdown-item"
-            *ngFor="let m of d.filteredMedicaments"
-            (click)="selectMedicament(d, m)"
-          >
-            {{ m.nom }} (stock: {{ m.quantiteStock }})
+      <div class="form-row">
+        <div class="form-group">
+          <label>Jours de distribution</label>
+          <div class="input-wrapper">
+            <span class="input-icon">💊</span>
+            <input
+              type="number"
+              [(ngModel)]="joursDistributionManuel"
+              (ngModelChange)="onJoursChange()"
+              placeholder="ex: 7"
+            />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Date prochain RDV</label>
+          <div class="input-wrapper">
+            <span class="input-icon">📅</span>
+            <input type="date" [(ngModel)]="dateProchainRdvManuel" />
           </div>
         </div>
       </div>
 
-      <!-- selected -->
-      <div class="selected" *ngIf="d.selectedMedicament">
-        {{ d.selectedMedicament.nom }}
-      </div>
+      <div class="section-title">Médicaments à distribuer</div>
 
-      <!-- QUANTITE -->
-<input 
-  type="number" 
-  [ngModel]="d.quantite"
-  (ngModelChange)="d.quantite = $event"
->
-      <!-- DELETE -->
-      <button class="btn-danger" (click)="removeDistribution(i)">✖</button>
+      <div class="distributions-list">
+        <div *ngFor="let d of distributionsManuelles; let i = index" class="distribution-row">
+          <div class="drug-search">
+            <div class="input-wrapper search-input">
+              <span class="input-icon">🔍</span>
+              <input
+                type="text"
+                placeholder="Rechercher médicament..."
+                [(ngModel)]="d.searchText"
+                (input)="filterMedicaments(d)"
+              />
+            </div>
+            <div class="dropdown" *ngIf="d.filteredMedicaments?.length > 0">
+              <div
+                class="dropdown-item"
+                *ngFor="let m of d.filteredMedicaments"
+                (click)="selectMedicament(d, m)"
+              >
+                <span class="drug-name">{{ m.nom }}</span>
+                <span class="drug-stock">Stock: {{ m.quantiteStock }}</span>
+              </div>
+            </div>
+          </div>
 
-    </div>
+          <div class="selected-tag" *ngIf="d.selectedMedicament">
+            ✅ {{ d.selectedMedicament.nom }}
+          </div>
 
-    <button class="btn-outline" (click)="addDistribution()">
-      ➕ Ajouter médicament
-    </button>
-
-    <button class="btn-primary full" (click)="creerSessionManuelle()">
-      ✅ Valider la session
-    </button>
-
-  </div>
-
-  <!-- ================= ORDONNANCE ================= -->
-  <div class="ordonnance-details card" *ngIf="ordonnance">
-
-    <h2>Détails Ordonnance</h2>
-
-    <div class="info-grid">
-      <div>👤 {{ ordonnance.patient.prenom }} {{ ordonnance.patient.nom }}</div>
-      <div>📁 {{ ordonnance.patient.numeroDossier }}</div>
-      <div>📞 {{ ordonnance.patient.numeroTlf }}</div>
-      <div>📅 {{ ordonnance.dateOrdonnance }}</div>
-      <div>⏰ RDV: {{ ordonnance.dateRdv }}</div>
-      <div>⏳ {{ ordonnance.dureeTraitement }} mois</div>
-    </div>
-
-    <h4>Médicaments prescrits</h4>
-
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Nom</th>
-          <th>Posologie</th>
-          <th>Unité</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let m of ordonnance.medicamentsGrouped">
-          <td>{{ m.nom }}</td>
-          <td>{{ m.posologie || 1 }}</td>
-        <td>{{ m.unite || '—' }}</td>        </tr>
-      </tbody>
-    </table>
-
-  </div>
-
-  <!-- ================= SESSIONS ================= -->
-  <div class="sessions-container">
-
-    <div class="header">
-      <h2>Sessions de traitement</h2>
-      <p>Suivi intelligent des distributions</p>
-    </div>
-
-    <div class="actions">
-      <button class="btn-primary" (click)="creerPremiereSession()">➕ Session auto</button>
-      <button class="btn-secondary" (click)="traiterArrivee()">👤 Patient arrivé</button>
-    </div>
- <div *ngIf="messageArrivee" class="alert-message">
-    {{ messageArrivee }}
-  </div>
-    <div class="session-list">
-
-      <div *ngFor="let s of sessions" class="session-card">
-
-        <div class="session-header">
-          <h3>Session #{{ s.id }}</h3>
-          <span class="status" [ngClass]="s.statut.toLowerCase()">
-            {{ s.statut }}
-          </span>
-        </div>
-
-        <div class="session-body">
-          📅 {{ s.dateSession }} <br>
-          ⏰ RDV: {{ s.dateProchainRdv }} <br>
-          💊 {{ s.joursDistribution }} jours
-        </div>
-
-        <div class="session-distributions">
-          <div *ngFor="let d of s.distributions">
-            💊 {{ d.nomMedicament }} — {{ d.quantiteDonnee }}
+          <div class="qty-row">
+            <label>Quantité</label>
+            <div class="input-wrapper qty-input">
+              <input
+                type="number"
+                [ngModel]="d.quantite"
+                (ngModelChange)="d.quantite = $event"
+                min="1"
+              />
+            </div>
+            <button class="btn-remove" (click)="removeDistribution(i)" title="Supprimer">
+              ✕
+            </button>
           </div>
         </div>
-
       </div>
 
+      <div class="form-actions">
+        <button class="btn-outline" (click)="addDistribution()">
+          ➕ Ajouter médicament
+        </button>
+        <button class="btn-primary" (click)="creerSessionManuelle()">
+          ✅ Valider la session
+        </button>
+      </div>
     </div>
 
+  </div>
+
+  <!-- ====== SESSIONS LIST ====== -->
+  <div class="card sessions-card">
+    <div class="sessions-header">
+      <div>
+        <div class="card-label">Historique</div>
+        <h2>Sessions de traitement</h2>
+        <p class="subtitle">Suivi intelligent des distributions</p>
+      </div>
+      <div class="sessions-actions">
+        <button class="btn-primary" (click)="creerPremiereSession()">➕ Session auto</button>
+        <button class="btn-secondary" (click)="traiterArrivee()">👤 Patient arrivé</button>
+      </div>
+    </div>
+
+    <div *ngIf="messageArrivee" class="alert-message">
+      {{ messageArrivee }}
+    </div>
+
+    <div class="session-grid">
+      <div *ngFor="let s of sessions" class="session-card" [ngClass]="'status-' + s.statut.toLowerCase()">
+        <div class="session-top">
+          <span class="session-id">Session #{{ s.id }}</span>
+          <span class="status-badge" [ngClass]="s.statut.toLowerCase()">{{ s.statut }}</span>
+        </div>
+        <div class="session-meta">
+          <div>📅 {{ s.dateSession }}</div>
+          <div>⏰ RDV: {{ s.dateProchainRdv }}</div>
+          <div>💊 {{ s.joursDistribution }} jours</div>
+        </div>
+        <div class="session-drugs">
+          <div *ngFor="let d of s.distributions" class="drug-chip">
+            {{ d.nomMedicament }} <strong>{{ d.quantiteDonnee }}</strong>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
 </div>
