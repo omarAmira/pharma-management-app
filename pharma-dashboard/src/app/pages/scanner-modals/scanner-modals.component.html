@@ -1,0 +1,16 @@
+<div class="scanner-page">
+  <img src="assets/scanner.png" alt="Scanner" class="scanner-icon">
+  <h2>Scanner un patient</h2>
+  <p>Veuillez scanner la carte du patient...</p>
+
+  <input id="scanInput" type="text" (input)="onScan($event)" autofocus style="opacity:0;position:absolute;">
+
+  <!-- Animation laser + texte + QR pulse -->
+  <div *ngIf="loading" class="scan-animation">
+    <div class="scan-line"></div>
+    <img src="assets/qr-icon.png" alt="QR" class="pulse-icon">
+    <p class="scan-text">Scan en cours...</p>
+  </div>
+
+  <button class="btn-close" (click)="close()">Fermer</button>
+</div>

@@ -1,0 +1,89 @@
+<form [formGroup]="ordonnanceForm" (ngSubmit)="submit()" class="ordonnance-form">
+
+  <!-- En-tête -->
+  <div class="form-header">
+    <mat-icon>assignment</mat-icon>
+    <h2>Nouvelle Ordonnance</h2>
+    <p>Remplissez les informations de l’ordonnance pour le patient sélectionné</p>
+  </div>
+
+  <!-- Informations générales -->
+  <div class="form-section">
+    <h3>Informations générales</h3>
+    <div class="d-row">
+      <label>Source</label>
+      <input formControlName="sourceOrdonnance" placeholder="Ex: Dr. Mansouri" />
+    </div>
+    <div class="d-row">
+      <label>Date ordonnance</label>
+      <input type="date" formControlName="dateOrdonnance" />
+    </div>
+    <div class="d-row">
+      <label>Date RDV</label>
+      <input type="date" formControlName="dateRdv" />
+    </div>
+    <div class="d-row">
+      <label>Durée traitement (mois)</label>
+      <input type="number" formControlName="dureeTraitement" />
+    </div>
+  </div>
+
+  <!-- Médicaments -->
+  <div class="form-section">
+    <h3>Médicaments</h3>
+    <div formArrayName="medicaments">
+      <div *ngFor="let m of medicaments.controls; let i = index" [formGroupName]="i" class="med-card">
+
+        <!-- Choix du type -->
+        <div class="d-row">
+          <label>Type</label>
+          <select formControlName="type">
+            <option value="stock">Depuis stock</option>
+            <option value="manuel">Autre médicament</option>
+          </select>
+        </div>
+
+        <!-- Cas 1 : médicament du stock -->
+        <div class="d-row" *ngIf="m.get('type')?.value === 'stock'">
+          <label>Médicament</label>
+          <select formControlName="medicamentStockId">
+            <option *ngFor="let med of medicamentsStock" [value]="med.id">
+              {{ med.nom }} (Stock: {{ med.quantiteStock }})
+            </option>
+          </select>
+        </div>
+
+        <!-- Cas 2 : médicament manuel -->
+        <div class="d-row" *ngIf="m.get('type')?.value === 'manuel'">
+          <label>Nom manuel</label>
+          <input formControlName="nomManuel" placeholder="Nom du médicament" />
+        </div>
+
+        <!-- Posologie -->
+        <div class="d-row">
+          <label>Posologie </label>
+          <input type="number" formControlName="posologie" />
+        </div>
+
+        <!-- Bouton supprimer -->
+        <div class="med-actions">
+          <button type="button" class="btn-danger" (click)="removeMedicament(i)">
+            <mat-icon>delete</mat-icon> Supprimer
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bouton ajouter -->
+    <button type="button" class="btn-secondary" (click)="addMedicament()">
+      <mat-icon>add</mat-icon> Ajouter un médicament
+    </button>
+  </div>
+
+  <!-- Actions -->
+  <div class="form-actions">
+    <button class="btn-primary" type="submit">
+      <mat-icon>save</mat-icon> Enregistrer l’ordonnance
+    </button>
+  </div>
+</form>

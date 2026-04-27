@@ -1,0 +1,10 @@
+<!-- src/app/app.component.html -->
+<div class="app-shell" [class.collapsed]="sidebarCollapsed">
+  <app-sidebar [collapsed]="sidebarCollapsed"></app-sidebar>
+  <div class="main-col">
+    <app-header (toggleSidebar)="toggleSidebar()"></app-header>
+    <main class="page-outlet">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

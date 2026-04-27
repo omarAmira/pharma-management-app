@@ -1,0 +1,82 @@
+.ordonnance-page {
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 12px;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.1);
+  font-family: 'DM Sans', sans-serif;
+}
+
+.patient-card {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.patient-card h2 {
+  margin-bottom: 10px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1976d2;
+}
+
+.patient-info p {
+  margin: 4px 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.ordonnance-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.ordonnance-table th {
+  background: #1976d2;
+  color: #fff;
+  padding: 10px;
+  text-align: left;
+  font-size: 14px;
+}
+
+.ordonnance-table td {
+  padding: 10px;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 13px;
+}
+
+.ordonnance-table tr:hover {
+  background: #f1f7ff;
+}
+
+.btn-sessions {
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background 0.2s ease;
+}
+
+.btn-sessions:hover {
+  background: #125a9c;
+}
+
+.loading {
+  font-size: 14px;
+  color: #1976d2;
+  font-weight: 500;
+}
+
+.no-data {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #777;
+  text-align: center;
+}

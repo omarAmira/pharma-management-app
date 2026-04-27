@@ -1,0 +1,27 @@
+// src/app/app.component.scss
+@import '../styles/variables';
+
+.app-shell {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.main-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.page-outlet {
+  flex: 1;
+  overflow-y: auto;
+  background: $bg;
+  padding: 26px;
+
+  &::-webkit-scrollbar       { width: 5px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb { background: $border; border-radius: 3px; }
+}

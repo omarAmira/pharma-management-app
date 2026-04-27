@@ -1,0 +1,102 @@
+<!-- src/app/layout/sidebar/sidebar.component.html -->
+<aside class="sidebar" [class.collapsed]="collapsed">
+
+  <!-- Logo -->
+  <div class="sb-logo">
+    <div class="sb-logo-icon">
+      <mat-icon>local_pharmacy</mat-icon>
+    </div>
+    <div class="sb-logo-text" *ngIf="!collapsed">
+      <span class="t1">PharmaDash</span>
+      <span class="t2">Gestion Pharmacie</span>
+    </div>
+  </div>
+
+  <!-- Principal -->
+  <div class="nav-section">
+    <span class="sb-label" *ngIf="!collapsed">Principal</span>
+    <ul class="nav-list">
+      <li *ngFor="let item of mainNav">
+        <a
+          [routerLink]="item.route"
+          routerLinkActive="active"
+          class="nav-link"
+          [matTooltip]="collapsed ? item.label : ''"
+          matTooltipPosition="right"
+        >
+          <mat-icon class="nav-ico">{{ item.icon }}</mat-icon>
+          <span class="nav-lbl" *ngIf="!collapsed">{{ item.label }}</span>
+          <span *ngIf="item.badge && !collapsed"
+                class="nav-badge"
+                [class.warn]="item.badgeType === 'warn'">
+            {{ item.badge }}
+          </span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Gestion -->
+  <div class="nav-section">
+    <span class="sb-label" *ngIf="!collapsed">Gestion</span>
+    <ul class="nav-list">
+      <li *ngFor="let item of managementNav">
+        <a
+          [routerLink]="item.route"
+          routerLinkActive="active"
+          class="nav-link"
+          [matTooltip]="collapsed ? item.label : ''"
+          matTooltipPosition="right"
+        >
+          <mat-icon class="nav-ico">{{ item.icon }}</mat-icon>
+          <span class="nav-lbl" *ngIf="!collapsed">{{ item.label }}</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Système -->
+  <div class="nav-section">
+    <span class="sb-label" *ngIf="!collapsed">Système</span>
+    <ul class="nav-list">
+      <li *ngFor="let item of systemNav">
+        <a
+          [routerLink]="item.route"
+          routerLinkActive="active"
+          class="nav-link"
+          [matTooltip]="collapsed ? item.label : ''"
+          matTooltipPosition="right"
+        >
+          <mat-icon class="nav-ico">{{ item.icon }}</mat-icon>
+          <span class="nav-lbl" *ngIf="!collapsed">{{ item.label }}</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- User card -->
+  <div class="sb-bottom">
+    <div class="user-card" [matMenuTriggerFor]="userMenu">
+      <div class="u-ava">AB</div>
+      <div class="u-info" *ngIf="!collapsed">
+        <span class="u-name">Omar Amira</span>
+        <span class="u-role">Pharmacien chef</span>
+      </div>
+      <mat-icon class="u-more" *ngIf="!collapsed">more_vert</mat-icon>
+    </div>
+
+    <mat-menu #userMenu="matMenu">
+      <button mat-menu-item>
+        <mat-icon>person</mat-icon> Mon profil
+      </button>
+      <button mat-menu-item>
+        <mat-icon>settings</mat-icon> Paramètres
+      </button>
+      <mat-divider></mat-divider>
+      <button mat-menu-item>
+        <mat-icon>logout</mat-icon> Déconnexion
+      </button>
+    </mat-menu>
+  </div>
+
+</aside>

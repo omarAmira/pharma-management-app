@@ -1,0 +1,121 @@
+<!-- src/app/pages/dashboard/dashboard.component.html -->
+
+<!-- ── STAT CARDS ── -->
+<div class="stats-row">
+  <div
+    *ngFor="let s of stats; let i = index"
+    class="stat-card"
+    [class.sc-g]="s.color === 'green'"
+    [class.sc-y]="s.color === 'gold'"
+    [class.sc-b]="s.color === 'blue'"
+    [class.sc-r]="s.color === 'red'"
+    [style.animation-delay]="(i * 0.05 + 0.04) + 's'"
+  >
+    <div class="sc-icon"><mat-icon>{{ s.icon }}</mat-icon></div>
+    <div class="sc-val">{{ s.value }}</div>
+    <div class="sc-lbl">{{ s.label }}</div>
+    <div class="sc-trend" [class.trend-up]="s.up" [class.trend-dn]="!s.up">
+      <mat-icon class="trend-ico">{{ s.up ? 'arrow_upward' : 'arrow_downward' }}</mat-icon>
+      {{ s.trend }}
+    </div>
+  </div>
+</div>
+
+
+
+<!-- ── CONTENT GRID ── -->
+<div class="grid-2">
+
+  <!-- Left column -->
+  <div class="col-stack">
+    <!-- Scanner QR Code -->
+<div class="scanner-wrapper" (click)="openScannerModal()">
+  <img src="assets/scanner.png" alt="Scanner QR Code" class="scanner-image">
+  <div class="scanner-label">Scanner QR Code</div>
+</div>
+
+    <!-- Chart Card -->
+    <div class="card">
+      <div class="card-head">
+        <h2>Ventes hebdomadaires</h2>
+        <div style="display:flex;align-items:center;gap:14px;">
+          <span class="chart-leg"><span class="dot-g"></span>Ventes</span>
+          <span class="chart-leg"><span class="dot-y"></span>Commandes</span>
+          <button class="c-action">Exporter</button>
+        </div>
+      </div>
+      <!-- Plain canvas — Chart.js will draw here -->
+      <div class="chart-container">
+        <canvas id="salesChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Stock Critique Table -->
+    <div class="card">
+      <div class="card-head">
+        <h2>Stock critique</h2>
+        <button class="c-action" (click)="router.navigate(['/stock'])">Voir tout →</button>
+      </div>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Médicament</th>
+            <th>Catégorie</th>
+            <th>Stock</th>
+            <th>Statut</th>
+            <th>Niveau</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <!-- Right column -->
+  <div class="col-stack">
+
+    <!-- Activity Feed -->
+    <div class="card">
+      <div class="card-head">
+        <h2>Activité récente</h2>
+        <button class="c-action">Filtrer</button>
+      </div>
+      <div class="act-list">
+        <div class="act-item" *ngFor="let a of activities; last as isLast">
+          <div class="act-line-wrap">
+            <div class="act-dot" [style.background]="a.color"></div>
+            <div class="act-line" *ngIf="!isLast"></div>
+          </div>
+          <div class="act-body">
+            <div class="act-t">{{ a.title }}</div>
+            <div class="act-s">{{ a.sub }}</div>
+          </div>
+          <div class="act-tm">{{ a.time }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="card">
+      <div class="card-head"><h2>Actions rapides</h2></div>
+      <div class="qa-list">
+        <button class="qa-btn">
+          <mat-icon>add_circle_outline</mat-icon> Nouvelle vente
+        </button>
+        <button class="qa-btn" (click)="router.navigate(['/prescriptions'])">
+          <mat-icon>receipt_long</mat-icon> Créer ordonnance
+        </button>
+        <button class="qa-btn" (click)="router.navigate(['/orders'])">
+          <mat-icon>shopping_cart</mat-icon> Passer commande
+        </button>
+        <button class="qa-btn" (click)="router.navigate(['/reports'])">
+          <mat-icon>bar_chart</mat-icon> Générer rapport
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>

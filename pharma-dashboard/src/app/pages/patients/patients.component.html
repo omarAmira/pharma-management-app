@@ -1,0 +1,141 @@
+<div class="pg-head">
+  <div>
+    <h2>Patients</h2>
+    <p>{{ patients.length }} patients enregistrés</p>
+  </div>
+  <button class="btn-primary" (click)="openAddForm = true">
+    <mat-icon>person_add</mat-icon> Nouveau patient
+  </button>
+</div>
+
+<!-- Formulaire d’ajout -->
+<div class="drawer-overlay" [class.open]="openAddForm" (click)="openAddForm = false">
+  <div class="drawer" [class.open]="openAddForm" (click)="$event.stopPropagation()">
+    <div class="drawer-head">
+      <h3>Ajouter un patient</h3>
+      <button class="d-close" (click)="openAddForm = false"><mat-icon>close</mat-icon></button>
+    </div>
+    <div class="drawer-body">
+      <form (ngSubmit)="addPatient()">
+        <div class="d-row"><span>Nom</span><input [(ngModel)]="newPatient.nom" name="nom" required /></div>
+        <div class="d-row"><span>Prénom</span><input [(ngModel)]="newPatient.prenom" name="prenom" required /></div>
+        <div class="d-row"><span>Date de naissance</span><input type="date" [(ngModel)]="newPatient.dateNaissance" name="dateNaissance" required /></div>
+        <div class="d-row"><span>Numéro dossier</span><input [(ngModel)]="newPatient.numeroDossier" name="numeroDossier" required /></div>
+        <div class="d-row"><span>Téléphone</span><input [(ngModel)]="newPatient.numeroTlf" name="numeroTlf" required /></div>
+        <div class="d-actions">
+          <button class="btn-primary" type="submit" style="width:100%;justify-content:center;">
+            <mat-icon>save</mat-icon> Enregistrer
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Barre de recherche et filtres -->
+<div class="filter-bar">
+  <div class="fb-search">
+    <mat-icon>search</mat-icon>
+    <input type="text" [formControl]="searchCtrl" placeholder="Nom, prénom, dossier…" />
+  </div>
+  <select class="fb-select" [formControl]="statutCtrl">
+    <option value="">Tous les patients</option>
+    <option value="actif">Actifs</option>
+    <option value="termine">Terminés</option>
+  </select>
+</div>
+
+<!-- Grille des patients -->
+<div class="pt-grid" *ngIf="patients.length > 0">
+  <div class="pt-card" *ngFor="let p of patients; let i = index" (click)="openPatient(p)">
+    <div class="pt-top">
+      <div class="pt-ava" [ngClass]="p.gradient">{{ p.initiales }}</div>
+      <div class="pt-name-wrap">
+        <div class="pt-name">{{ p.nom }} {{ p.prenom }}</div>
+        <div class="pt-info">{{ p.age }} ans · Dossier: {{ p.numeroDossier }}</div>
+      </div>
+      <span class="badge" [ngClass]="badgeClass(p.statut)">{{ badgeLabel(p.statut) }}</span>
+    </div>
+
+    <div class="pt-body">
+      <div class="pt-row">
+        <span class="pt-lbl">Date de naissance</span>
+        <span class="pt-val">{{ p.dateNaissance }}</span>
+      </div>
+      <div class="pt-row">
+        <span class="pt-lbl">Téléphone</span>
+        <span class="pt-val">{{ p.numeroTlf }}</span>
+      </div>
+    </div>
+
+    <div class="pt-foot">
+      <span class="pt-last">
+        <mat-icon>schedule</mat-icon> {{ p.derniereVisite }}
+      </span>
+      <span class="pt-action">Voir fiche →</span>
+
+      <button class="btn-primary" (click)="createOrdonnance(p.id)">
+    <mat-icon>description</mat-icon> Créer ordonnance
+  </button>
+    </div>
+  </div>
+</div>
+
+<!-- Drawer détail -->
+<div class="drawer-overlay" [class.open]="selectedPatient" (click)="closeDetail()">
+  <div class="drawer" [class.open]="selectedPatient" (click)="$event.stopPropagation()">
+    <div class="drawer-head" *ngIf="selectedPatient">
+      
+      <div class="d-ava" [ngClass]="selectedPatient.gradient">{{ selectedPatient.initiales }}</div>
+      <div class="d-title">
+        <h3>{{ selectedPatient.nom }} {{ selectedPatient.prenom }}</h3>
+        <p>{{ selectedPatient.age }} ans · Dossier: {{ selectedPatient.numeroDossier }}</p>
+      </div>
+      <button class="d-close" (click)="closeDetail()"><mat-icon>close</mat-icon></button>
+    </div>
+
+    <div class="drawer-body" *ngIf="selectedPatient">
+      <div class="d-section">
+        <h4>Informations médicales</h4>
+        <div class="d-row"><span>Date de naissance</span> <strong>{{ selectedPatient.dateNaissance }}</strong></div>
+        <div class="d-row"><span>Téléphone</span> <strong>{{ selectedPatient.numeroTlf }}</strong></div>
+        <div class="d-row"><span>Statut</span>
+          <span class="badge" [ngClass]="badgeClass(selectedPatient.statut)">{{ badgeLabel(selectedPatient.statut) }}</span>
+        </div>
+      </div>
+        <!-- QR Code Patient -->
+  <div class="d-section" *ngIf="selectedPatient.qrCode">
+    <h4>Identifiant QR Code</h4>
+    <div class="qr-code-box">
+      <img [src]="'data:image/png;base64,' + selectedPatient.qrCode" alt="QR Code Patient">
+      <p>Scannez pour identifier le patient</p>
+    </div>
+  </div>
+
+      <div class="d-section" *ngIf="ordonnances?.length">
+  <h4>Ordonnances</h4>
+
+  <div class="ord-grid">
+
+    <div class="ord-card"
+         *ngFor="let o of ordonnances"
+         (click)="openOrdonnance(o)">
+
+      <div class="ord-head">
+        <mat-icon>description</mat-icon>
+        <span>Ordonnance #{{ o.id }}</span>
+      </div>
+
+      <div class="ord-body">
+        <div><b>Date:</b> {{ o.dateOrdonnance }}</div>
+        <div><b>Rdv:</b> {{ o.dateRdv }}</div>
+        <div><b>Durée:</b> {{ o.dureeTraitement }} mois</div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+    </div>
+  </div>
+</div>

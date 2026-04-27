@@ -1,0 +1,156 @@
+<!-- src/app/pages/stock/stock.component.html -->
+
+<div class="pg-head">
+  <div>
+    <h2>Gestion du Stock</h2>
+    <p>{{ medicaments.length }} références enregistrées</p>
+  </div>
+  <button class="btn-primary" (click)="openAddForm = true">
+    <mat-icon>add</mat-icon> Ajouter médicament
+  </button>
+</div>
+
+<!-- Formulaire d’ajout (drawer) -->
+<!-- Formulaire d’ajout (drawer) -->
+<div class="drawer-overlay" [class.open]="openAddForm" (click)="openAddForm = false" *ngIf="openAddForm">
+  <div class="drawer" [class.open]="openAddForm" (click)="$event.stopPropagation()">
+    <div class="drawer-head">
+      <h3>➕ Nouveau médicament</h3>
+      <button class="d-close" (click)="openAddForm = false"><mat-icon>close</mat-icon></button>
+    </div>
+
+    <div class="drawer-body">
+      <form (ngSubmit)="addMedicament()" class="add-form">
+        <!-- Ligne 1 -->
+        <div class="form-row">
+          <label for="nom">Nom du médicament</label>
+          <input id="nom" [(ngModel)]="newMed.nom" name="nom" required placeholder="Ex: Paracétamol" />
+        </div>
+
+        <!-- Ligne 2 -->
+        <div class="form-row">
+          <label for="quantite">Quantité en stock</label>
+          <input id="quantite" type="number" [(ngModel)]="newMed.quantiteStock" name="quantiteStock" required placeholder="Ex: 100" />
+        </div>
+
+        <!-- Ligne 3 -->
+        <div class="form-row">
+          <label for="seuil">Seuil minimum</label>
+          <input id="seuil" type="number" [(ngModel)]="newMed.seuil" name="seuil" required placeholder="Ex: 20" />
+        </div>
+
+        <!-- Ligne 4 -->
+        <div class="form-row">
+          <label for="unite">Unité</label>
+          <select id="unite" [(ngModel)]="newMed.unite" name="unite" required>
+            <option value="SIROP">Sirop</option>
+            <option value="COMPRIME">Comprimé</option>
+            <option value="UI">UI</option>
+            <option value="PILULATION">Pilulation</option>
+            <option value="GOUTTES">Gouttes</option>
+          </select>
+        </div>
+
+        <!-- Ligne 5 -->
+        <div class="form-row">
+          <label for="peremption">Date de péremption</label>
+          <input id="peremption" type="date" [(ngModel)]="newMed.datePeremption" name="datePeremption" required />
+        </div>
+
+        <!-- Actions -->
+        <div class="form-actions">
+          <button class="btn-primary" type="submit">
+            <mat-icon>save</mat-icon> Enregistrer
+          </button>
+          <button class="btn-secondary" type="button" (click)="openAddForm = false">
+            <mat-icon>cancel</mat-icon> Annuler
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<!-- Stats -->
+<div class="stats-row">
+  <div *ngFor="let s of stats; let i = index"
+       class="stat-card"
+       [class.sc-g]="s.color === 'green'"
+       [class.sc-y]="s.color === 'gold'"
+       [class.sc-r]="s.color === 'red'"
+       [style.animation-delay]="(i * 0.05 + 0.04) + 's'">
+    <div class="sc-icon"><mat-icon>{{ s.icon }}</mat-icon></div>
+    <div class="sc-val">{{ s.value }}</div>
+    <div class="sc-lbl">{{ s.label }}</div>
+  </div>
+</div>
+
+<!-- Filters -->
+<div class="filter-bar">
+  <div class="fb-search">
+    <mat-icon>search</mat-icon>
+    <input type="text" [formControl]="searchCtrl" placeholder="Rechercher médicament…" />
+  </div>
+  <select class="fb-select" [formControl]="categorieCtrl">
+    <option value="">Toutes catégories</option>
+    <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
+  </select>
+  <select class="fb-select" [formControl]="statutCtrl">
+    <option value="">Tous statuts</option>
+    <option value="ok">OK</option>
+    <option value="low">Faible</option>
+    <option value="empty">Critique</option>
+  </select>
+  <button class="c-action" (click)="resetFilters()">Réinitialiser</button>
+</div>
+
+<!-- Table -->
+<div class="card">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Médicament</th>
+        <th>Stock actuel</th>
+        <th>Seuil mini</th>
+        <th>Unité</th>
+        <th>Péremption</th>
+        <th>Statut</th>
+        <th>Niveau</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let m of medicaments">
+        <td>{{ m.nom }}</td>
+        <td>
+          <strong>{{ m.stock }}</strong>
+          <span *ngIf="m.unite === 'COMPRIME'"> comprimé(s)</span>
+          <span *ngIf="m.unite !== 'COMPRIME'"> boîte(s)</span>
+        </td>        <td>{{ m.seuil }}</td>
+        <td>{{ m.unite }}</td>
+        <td [ngClass]="peremptionClass(m.peremption, m.statut)">{{ m.peremption }}</td>
+        <td><span class="badge" [ngClass]="statusClass(m.statut)">{{ statusLabel(m.statut) }}</span></td>
+        <td>
+          <div class="prog">
+            <div class="prog-fill" [ngClass]="progClass(m.statut)" [style.width.%]="m.pct"></div>
+          </div>
+        </td>
+        <td>
+          <div class="tbl-actions">
+            <button class="tbl-btn edit" matTooltip="Modifier"><mat-icon>edit</mat-icon></button>
+            <button class="tbl-btn order" matTooltip="Commander" *ngIf="m.statut !== 'ok'">
+              <mat-icon>shopping_cart</mat-icon>
+            </button>
+          </div>
+        </td>
+      </tr>
+      <tr *ngIf="medicaments.length === 0">
+        <td colspan="8" class="empty-row">
+          <mat-icon>search_off</mat-icon>
+          <span>Aucun médicament trouvé</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

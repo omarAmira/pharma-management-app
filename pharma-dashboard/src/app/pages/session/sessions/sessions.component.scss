@@ -1,0 +1,149 @@
+.sessions-page {
+  padding: 20px;
+  background: #f5f7fb;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+/* CARD BASE */
+.card {
+  background: white;
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+}
+
+/* FORM */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+
+  input {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    outline: none;
+
+    &:focus {
+      border-color: #1976d2;
+      box-shadow: 0 0 0 3px rgba(25,118,210,0.15);
+    }
+  }
+}
+
+/* SEARCH */
+.search-box {
+  position: relative;
+  width: 60%;
+
+  input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+  }
+
+  .dropdown {
+    position: absolute;
+    background: white;
+    width: 100%;
+    max-height: 180px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    z-index: 10;
+
+    .dropdown-item {
+      padding: 8px;
+      cursor: pointer;
+
+      &:hover {
+        background: #f0f4ff;
+      }
+    }
+  }
+}
+
+/* ROW */
+.distribution-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.selected {
+  background: #e3f2fd;
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+
+/* BUTTONS */
+.btn-primary {
+  background: #1976d2;
+  color: white;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+
+  &:hover {
+    background: #125aa0;
+  }
+}
+
+.btn-secondary {
+  background: #eee;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: none;
+}
+
+.btn-outline {
+  border: 1px solid #1976d2;
+  color: #1976d2;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: transparent;
+}
+
+.btn-danger {
+  background: #ff4d4f;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+
+/* SESSION CARDS */
+.session-card {
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.session-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* STATUS */
+.status {
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+
+  &.en_attente { background: #fff3cd; }
+  &.effectuee { background: #d4edda; }
+  &.en_retard { background: #f8d7da; }
+  &.terminee { background: #e2e3e5; }
+}

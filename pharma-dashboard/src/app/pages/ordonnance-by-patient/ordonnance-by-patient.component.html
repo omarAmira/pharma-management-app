@@ -1,0 +1,55 @@
+<div class="ordonnance-page card">
+  <!-- En-tête patient -->
+  <div class="patient-card">
+    <h2>Détails du patient</h2>
+    <div class="patient-info">
+      <p><strong>Nom :</strong> {{ patient?.nom }}</p>
+      <p><strong>Prénom :</strong> {{ patient?.prenom }}</p>
+      <p><strong>Date de naissance :</strong> {{ patient?.dateNaissance }}</p>
+      <p><strong>N° dossier :</strong> {{ patient?.numeroDossier }}</p>
+      <p><strong>Téléphone :</strong> {{ patient?.numeroTlf }}</p>
+    </div>
+  </div>
+
+  <!-- Liste des ordonnances -->
+  <h2>Ordonnances du patient #{{ patientId }}</h2>
+
+  <div *ngIf="loading" class="loading">Chargement...</div>
+
+  <table class="ordonnance-table" *ngIf="ordonnances.length > 0">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Date</th>
+        <th>Médicaments</th>
+        <th>Durée traitement</th>
+        <th>Prochain RDV</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let o of ordonnances">
+        <td>{{ o.id }}</td>
+        <td>{{ o.dateOrdonnance }}</td>
+        <td>
+          <ul>
+            <li *ngFor="let m of o.medicaments">
+              {{ m.nom }} — {{ m.posologie }}
+            </li>
+          </ul>
+        </td>
+        <td>{{ o.dureeTraitement }} mois</td>
+        <td>{{ o.dateRdv }}</td>
+        <td>
+          <button class="btn-sessions" (click)="goToSessions(o.id)">
+            Voir sessions
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="!loading && ordonnances.length === 0" class="no-data">
+    <p>Aucune ordonnance trouvée pour ce patient.</p>
+  </div>
+</div>

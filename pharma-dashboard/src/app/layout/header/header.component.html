@@ -1,0 +1,93 @@
+<!-- src/app/layout/header/header.component.html -->
+<header class="header">
+
+  <!-- Toggle sidebar -->
+  <button class="h-menu" (click)="toggleSidebar.emit()" matTooltip="Masquer/Afficher menu">
+    <mat-icon>menu</mat-icon>
+  </button>
+
+  <!-- Page title -->
+  <div class="h-title">
+    <h1>{{ pageTitle }}</h1>
+    <p *ngIf="pageSubtitle">{{ pageSubtitle }}</p>
+  </div>
+
+  <!-- Search bar -->
+  <div class="h-search">
+    <mat-icon class="s-ico">search</mat-icon>
+    <input
+      [formControl]="searchCtrl"
+      type="text"
+      class="s-input"
+      placeholder="Médicaments, patients, ordonnances…"
+    />
+    <span class="s-kbd">⌘K</span>
+  </div>
+
+  <!-- Action icons -->
+  <div class="h-actions">
+
+    <button class="h-btn" matTooltip="Messages">
+      <mat-icon>mail_outline</mat-icon>
+    </button>
+
+    <!-- Notifications button + dropdown menu -->
+    <button
+      class="h-btn"
+      [matMenuTriggerFor]="notifMenu"
+      matTooltip="Notifications"
+    >
+      <mat-icon>notifications_none</mat-icon>
+      <span class="n-badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
+    </button>
+
+    <mat-menu #notifMenu="matMenu" class="notif-panel" xPosition="before">
+      <!-- Header row inside menu -->
+      <div class="nd-head" (click)="$event.stopPropagation()">
+        <span>
+          Notifications
+          <span class="nd-count" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
+        </span>
+        <button class="nd-readall" (click)="markAllRead()">Tout lire</button>
+      </div>
+
+      <div
+        *ngFor="let n of notifications"
+        class="nd-item"
+        mat-menu-item
+        [class.unread]="!n.read"
+      >
+        <span class="nd-dot" [style.background]="n.color"></span>
+        <div class="nd-body">
+          <span class="nt">{{ n.title }}</span>
+          <span class="ns">{{ n.message }}</span>
+        </div>
+        <span class="nd-time">{{ n.time }}</span>
+      </div>
+    </mat-menu>
+
+    <!-- User avatar menu -->
+    <!-- User avatar + logo -->
+<div class="h-user">
+  <!-- Logo -->
+  <img src="assets/logoo.png" alt="PharmaDash Logo" class="h-logo" />
+
+  <!-- Avatar -->
+  <div class="h-avatar" [matMenuTriggerFor]="userMenu" matTooltip="Mon profil">OA</div>
+</div>
+
+<mat-menu #userMenu="matMenu" xPosition="before">
+  <button mat-menu-item>
+    <mat-icon>person</mat-icon> Mon profil
+  </button>
+  <button mat-menu-item>
+    <mat-icon>settings</mat-icon> Paramètres
+  </button>
+  <mat-divider></mat-divider>
+  <button mat-menu-item>
+    <mat-icon>logout</mat-icon> Déconnexion
+  </button>
+</mat-menu>
+
+  </div>
+</header>
