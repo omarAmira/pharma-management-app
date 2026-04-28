@@ -10,7 +10,7 @@
   </button>
 </div>
 
-<!-- Formulaire d’ajout (drawer) -->
+
 <!-- Formulaire d’ajout (drawer) -->
 <div class="drawer-overlay" [class.open]="openAddForm" (click)="openAddForm = false" *ngIf="openAddForm">
   <div class="drawer" [class.open]="openAddForm" (click)="$event.stopPropagation()">
@@ -71,7 +71,74 @@
   </div>
 </div>
 
+<!-- EDIT DRAWER -->
+<!-- EDIT DRAWER -->
+<div class="drawer-overlay" [class.open]="openEditForm" (click)="openEditForm=false">
 
+  <div class="drawer" [class.open]="openEditForm" (click)="$event.stopPropagation()">
+
+    <div class="drawer-head">
+      <h3>✏️ Modifier médicament</h3>
+      <button class="d-close" (click)="openEditForm=false">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <div class="drawer-body">
+
+      <form *ngIf="editMed" (ngSubmit)="updateMedicament()" class="add-form">
+
+        <!-- Nom -->
+        <div class="form-row">
+          <label>Nom du médicament</label>
+          <input [(ngModel)]="editMed.nom" name="edit_nom" required>
+        </div>
+
+        <!-- Stock -->
+        <div class="form-row">
+          <label>Quantité en stock</label>
+          <input type="number" [(ngModel)]="editMed.quantiteStock" name="edit_stock">
+        </div>
+
+        <!-- Seuil -->
+        <div class="form-row">
+          <label>Seuil minimum</label>
+          <input type="number" [(ngModel)]="editMed.seuil" name="edit_seuil">
+        </div>
+
+        <!-- Unité -->
+        <div class="form-row">
+          <label>Unité</label>
+          <select [(ngModel)]="editMed.unite" name="edit_unite">
+            <option>COMPRIME</option>
+            <option>SIROP</option>
+            <option>UI</option>
+            <option>GOUTTES</option>
+          </select>
+        </div>
+
+        <!-- Péremption -->
+        <div class="form-row">
+          <label>Date de péremption</label>
+          <input type="date" [(ngModel)]="editMed.datePeremption" name="edit_date">
+        </div>
+
+        <!-- Actions -->
+        <div class="form-actions">
+          <button class="btn-primary" type="submit">
+            <mat-icon>save</mat-icon> Modifier
+          </button>
+
+          <button class="btn-secondary" type="button" (click)="openEditForm=false">
+            <mat-icon>cancel</mat-icon> Annuler
+          </button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+</div>
 <!-- Stats -->
 <div class="stats-row">
   <div *ngFor="let s of stats; let i = index"
@@ -138,8 +205,9 @@
         </td>
         <td>
           <div class="tbl-actions">
-            <button class="tbl-btn edit" matTooltip="Modifier"><mat-icon>edit</mat-icon></button>
-            <button class="tbl-btn order" matTooltip="Commander" *ngIf="m.statut !== 'ok'">
+<button class="tbl-btn edit" type="button" (click)="openEdit(m)">
+  <mat-icon>edit</mat-icon>
+</button>                  <button class="tbl-btn order" matTooltip="Commander" *ngIf="m.statut !== 'ok'">
               <mat-icon>shopping_cart</mat-icon>
             </button>
           </div>

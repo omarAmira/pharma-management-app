@@ -15,6 +15,7 @@ export class StockComponent implements OnInit {
 
   medicaments: any[] = [];
   openAddForm = false;
+  openEditForm = false;
 
   newMed: MedicamentStock = {
     nom: '',
@@ -23,6 +24,7 @@ export class StockComponent implements OnInit {
     unite: 'COMPRIME',
     datePeremption: ''
   };
+  editMed: any = null;
 
   stats = [
     { label: 'Références OK',     value: '0', icon: 'check_circle', color: 'green', trend: '', up: true },
@@ -99,4 +101,19 @@ categories: any;
     if (statut === 'empty') return 'exp-red';
     return 'exp-ok';
   }
+
+    // ---------- EDIT ----------
+ openEdit(m: any): void {
+  console.log("xxxxx");
+    this.editMed = { ...m };   // clone safe
+  this.openEditForm = true;
+}
+updateMedicament(): void {
+  this.stockService.updateMedicament(this.editMed.id, this.editMed)
+    .subscribe(() => {
+      this.openEditForm = false;
+      this.editMed = null;
+      this.loadMedicaments();
+    });
+}
 }

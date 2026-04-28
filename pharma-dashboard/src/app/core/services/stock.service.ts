@@ -25,4 +25,8 @@ export class StockService {
   addMedicament(m: MedicamentStock): Observable<MedicamentStock> {
     return this.http.post<MedicamentStock>(this.apiUrl, m);
   }
+
+  updateMedicament(id: number, data: any) {
+  return this.http.put(`${this.apiUrl}/${id}`, data);
+}
 }
