@@ -25,4 +25,12 @@ public class MedicamentStockController {
     public List<MedicamentStock> getAllMedicamentsStock() {
         return stockService.getAllMedicamentsStock();
     }
+
+    @PutMapping("/{id}")
+    public MedicamentStock updateMedicamentStock(
+            @PathVariable Long id,
+            @RequestBody MedicamentStock medicamentStock
+    ) {
+        return stockService.updateMedicamentStock(id, medicamentStock);
+    }
 }

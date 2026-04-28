@@ -22,4 +22,18 @@ public class MedicamentStockService {
     public List<MedicamentStock> getAllMedicamentsStock() {
         return stockRepository.findAll();
     }
+    public MedicamentStock updateMedicamentStock(Long id, MedicamentStock updatedMedicament) {
+
+        MedicamentStock existing = stockRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Medicament not found"));
+
+        existing.setNom(updatedMedicament.getNom());
+        existing.setQuantiteStock(updatedMedicament.getQuantiteStock());
+        existing.setSeuil(updatedMedicament.getSeuil());
+        existing.setUnite(updatedMedicament.getUnite());
+        existing.setDatePeremption(updatedMedicament.getDatePeremption());
+
+        return stockRepository.save(existing);
+    }
+
 }
