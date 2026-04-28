@@ -33,7 +33,82 @@
   <img src="assets/scanner.png" alt="Scanner QR Code" class="scanner-image">
   <div class="scanner-label">Scanner QR Code</div>
 </div>
+<div class="card calendar-card">
 
+  <div class="card-head">
+    <h2>Calendrier patients</h2>
+
+    <div class="nav">
+    <button (click)="previousMonth()">
+  ◀
+</button>
+
+<span>
+  {{ currentMonth | date:'MMMM yyyy' }}
+</span>
+
+<button (click)="nextMonth()">
+  ▶
+</button>
+    </div>
+  </div>
+
+  <div class="calendar-grid">
+
+  <div
+    class="day"
+    *ngFor="let d of calendarDays"
+    [ngClass]="{
+      low: d.count <= 2,
+      mid: d.count > 2 && d.count <= 5,
+      high: d.count > 5,
+      today: d.isToday
+    }"
+    (click)="selectedDate = d.date; loadPatientsByDate(d.date)"
+  >
+
+    <!-- 🔥 badge du jour (hors du carré visuellement) -->
+    <div class="day-badge">{{ d.day }}</div>
+
+    <!-- contenu interne -->
+    <div class="day-content">
+      <div class="count" *ngIf="d.count > 0">
+        {{ d.count }} patients
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+
+<div class="card" *ngIf="selectedPatients.length > 0">
+  <div class="card-head">
+    <h2>Patients du {{ selectedDate }}</h2>
+  </div>
+
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Nom</th>
+        <th>Prénom</th>
+        <th>Statut</th>
+        <th>Rendez-vous</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let p of selectedPatients">
+        <td>{{ p.nom }}</td>
+        <td>{{ p.prenom }}</td>
+        <td>{{ p.statut }}</td>
+        <td>{{ p.dateRdv }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+</div>
     <!-- Chart Card -->
     <div class="card">
       <div class="card-head">
@@ -49,7 +124,6 @@
         <canvas id="salesChart"></canvas>
       </div>
     </div>
-
     <!-- Stock Critique Table -->
     <div class="card">
       <div class="card-head">
@@ -76,6 +150,24 @@
 
   <!-- Right column -->
   <div class="col-stack">
+      <!-- Quick Actions -->
+    <div class="card">
+      <div class="card-head"><h2>Actions rapides</h2></div>
+      <div class="qa-list">
+        <button class="qa-btn">
+          <mat-icon>add_circle_outline</mat-icon> Nouvelle vente
+        </button>
+        <button class="qa-btn" (click)="router.navigate(['/prescriptions'])">
+          <mat-icon>receipt_long</mat-icon> Créer ordonnance
+        </button>
+        <button class="qa-btn" (click)="router.navigate(['/orders'])">
+          <mat-icon>shopping_cart</mat-icon> Passer commande
+        </button>
+        <button class="qa-btn" (click)="router.navigate(['/reports'])">
+          <mat-icon>bar_chart</mat-icon> Générer rapport
+        </button>
+      </div>
+    </div>
 
     <!-- Activity Feed -->
     <div class="card">
@@ -98,24 +190,7 @@
       </div>
     </div>
 
-    <!-- Quick Actions -->
-    <div class="card">
-      <div class="card-head"><h2>Actions rapides</h2></div>
-      <div class="qa-list">
-        <button class="qa-btn">
-          <mat-icon>add_circle_outline</mat-icon> Nouvelle vente
-        </button>
-        <button class="qa-btn" (click)="router.navigate(['/prescriptions'])">
-          <mat-icon>receipt_long</mat-icon> Créer ordonnance
-        </button>
-        <button class="qa-btn" (click)="router.navigate(['/orders'])">
-          <mat-icon>shopping_cart</mat-icon> Passer commande
-        </button>
-        <button class="qa-btn" (click)="router.navigate(['/reports'])">
-          <mat-icon>bar_chart</mat-icon> Générer rapport
-        </button>
-      </div>
-    </div>
+  
 
   </div>
 </div>
