@@ -112,3 +112,127 @@
   }
 }
 
+.calendar-card {
+  margin-top: 20px;
+  padding: 16px;
+}
+
+.card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h2 {
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    button {
+      background: #f4f6f8;
+      border: none;
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.2s;
+
+      &:hover {
+        background: #e6eef0;
+      }
+    }
+
+    span {
+      font-weight: 600;
+      text-transform: capitalize;
+      color: #2aad84;
+    }
+  }
+}.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+}
+
+/* 🔲 case calendrier */
+.day {
+  position: relative;
+  height: 80px;
+  border-radius: 12px;
+  background: #f7f9fb;
+  cursor: pointer;
+  transition: 0.2s ease;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    transform: translateY(-2px);
+    background: #eef6f3;
+  }
+}
+
+/* 🔥 badge du jour (EXTÉRIEUR VISUEL) */
+.day-badge {
+  position: absolute;
+  top: -8px;
+  left: -8px;
+
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+
+  background: white;
+  border: 2px solid #2aad84;
+  color: #2aad84;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+/* contenu intérieur */
+.day-content {
+  text-align: center;
+}
+
+.count {
+  font-size: 12px;
+  font-weight: 600;
+  color: #2aad84;
+}
+
+/* 🔥 heatmap */
+.day.low {
+  background: rgba(42, 173, 132, 0.08);
+}
+
+.day.mid {
+  background: rgba(42, 173, 132, 0.18);
+}
+
+.day.high {
+  background: rgba(42, 173, 132, 0.35);
+
+  .count {
+    color: white;
+  }
+}
+
+/* 🟡 today */
+.day.today .day-badge {
+  background: #ffd54f;
+  border-color: #ffb300;
+  color: #1f1f1f;
+}

@@ -5,7 +5,7 @@ import { Chart, registerables } from 'chart.js';
 import { StockService } from '../../core/services/stock.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ScannerModalComponent } from '../scanner-modals/scanner-modals.component';
-
+import { DashboardService, StatJourDTO, PatientArriveDTO } from '../../core/services/dashboard.service';
 // Register all Chart.js components
 Chart.register(...registerables);
 
@@ -26,6 +26,16 @@ export interface Activity {
 })
 export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
 
+calendarDays: any[] = [];
+calendarMap: Map<string, number> = new Map();
+
+currentMonth: Date = new Date();
+today: string = '';
+  ////// variable des patient a arrivé
+  statsParJour: StatJourDTO[] = [];
+  selectedPatients: PatientArriveDTO[] = [];
+  selectedDate: string = '';
+
   stats: StatCard[] = [
     { label: "Chiffre d'affaires",  value: '48 320 DT', icon: 'payments',      color: 'green', trend: '+12,4% vs mois dernier', up: true  },
     { label: 'Références en stock', value: '1 247',     icon: 'inventory_2',   color: 'gold',  trend: '5 références critiques', up: false },
@@ -43,10 +53,16 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private chart: Chart | null = null;
 
-  constructor(private stockService: StockService, public router: Router, private dialog: MatDialog) {}
+  constructor(private stockService: StockService, public router: Router, private dialog: MatDialog,  private dashboardService: DashboardService
+) {}
 
-  ngOnInit(): void {
-  }
+ngOnInit(): void {
+  const now = new Date();
+
+  this.today = now.toISOString().split('T')[0]; // ✅ plus fiable
+}
+    
+  
 
   ngAfterViewInit(): void {
     // Use timeout to ensure the canvas element is in the DOM
@@ -59,67 +75,89 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
       this.chart = null;
     }
   }
+loadPatientsByDate(date: string): void {
+  this.dashboardService.getPatientsByDate(date)
+    .subscribe(res => {
+      this.selectedPatients = res;
+    });
+}
 
-  private buildChart(): void {
+
+buildCalendar(data: StatJourDTO[]): void {
+
+  this.calendarMap.clear();
+
+  data.forEach(d => {
+    this.calendarMap.set(d.date, d.nombrePatients);
+  });
+
+  const year = this.currentMonth.getFullYear();
+  const month = this.currentMonth.getMonth();
+
+  const todayStr = this.today; // 👈 AJOUT IMPORTANT
+
+  const lastDay = new Date(year, month + 1, 0);
+
+  const days: any[] = [];
+
+  for (let i = 1; i <= lastDay.getDate(); i++) {
+
+    const dateStr =
+      `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+
+    days.push({
+      date: dateStr,
+      day: i,
+      count: this.calendarMap.get(dateStr) || 0,
+
+      // 🔥 AJOUT ICI
+      isToday: dateStr === todayStr
+    });
+  }
+
+  this.calendarDays = days;
+}
+ private buildChart(): void {
+
+  this.dashboardService.getStatsParJour().subscribe(data => {
+
+    this.statsParJour = data;
+      this.buildCalendar(data); // 🔥 AJOUT ICI
+
+
     const canvas = document.getElementById('salesChart') as HTMLCanvasElement;
     if (!canvas) return;
 
-    // Destroy previous instance if exists (e.g. on re-navigation)
-    if (this.chart) { this.chart.destroy(); }
+    if (this.chart) this.chart.destroy();
 
     this.chart = new Chart(canvas, {
       type: 'bar',
       data: {
-        labels: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
+        labels: data.map(d => d.date),
         datasets: [
           {
-            label: 'Ventes (DT)',
-            data: [4800, 6500, 3900, 7800, 5700, 7200, 2800],
+            label: 'Patients par jour',
+            data: data.map(d => d.nombrePatients),
             backgroundColor: 'rgba(42,173,132,0.75)',
-            hoverBackgroundColor: 'rgba(42,173,132,1)',
-            borderRadius: 6,
-            borderSkipped: false,
-          },
-          {
-            label: 'Commandes (DT)',
-            data: [3200, 4200, 2400, 5500, 3600, 5000, 1600],
-            backgroundColor: 'rgba(240,180,41,0.75)',
-            hoverBackgroundColor: 'rgba(240,180,41,1)',
-            borderRadius: 6,
-            borderSkipped: false,
-          },
-        ],
+            borderRadius: 6
+          }
+        ]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            backgroundColor: '#0d4f3c',
-            titleFont: { family: "'DM Sans', sans-serif", size: 12 },
-            bodyFont:  { family: "'DM Sans', sans-serif", size: 12 },
-            padding: 10,
-            cornerRadius: 8,
-            callbacks: {
-              label: ctx => ` ${ctx.dataset.label?.split(' ')[0]}: ${(ctx.parsed.y ?? 0).toLocaleString('fr-FR')} DT`,
-            },
-          },
-        },
-        scales: {
-          x: {
-            grid: { display: false },
-            ticks: { font: { family: "'DM Sans', sans-serif", size: 11 }, color: '#8aab9f' },
-          },
-          y: {
-            grid: { color: '#eef5f2' },
-            border: { display: false },
-            ticks: { font: { family: "'DM Sans', sans-serif", size: 11 }, color: '#8aab9f' },
-          },
-        },
-      },
+        onClick: (event, elements) => {
+
+          if (elements.length > 0) {
+            const index = elements[0].index;
+            this.selectedDate = data[index].date;
+            this.loadPatientsByDate(this.selectedDate);
+          }
+        }
+      }
     });
-  }
+  });
+}
 
   // Helper methods used in template
   statusLabel(s: string): string {
@@ -155,5 +193,25 @@ openScannerModal(): void {
     }
   });
 
+}
+
+previousMonth(): void {
+  this.currentMonth = new Date(
+    this.currentMonth.getFullYear(),
+    this.currentMonth.getMonth() - 1,
+    1
+  );
+
+  this.buildCalendar(this.statsParJour);
+}
+
+nextMonth(): void {
+  this.currentMonth = new Date(
+    this.currentMonth.getFullYear(),
+    this.currentMonth.getMonth() + 1,
+    1
+  );
+
+  this.buildCalendar(this.statsParJour);
 }
 }
