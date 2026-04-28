@@ -1,10 +1,7 @@
 package com.example.pharamax.service;
 
-import com.example.pharamax.dto.DistributionDTO;
-import com.example.pharamax.dto.DistributionRequestDTO;
-import com.example.pharamax.dto.SessionRequestDTO;
+import com.example.pharamax.dto.*;
 
-import com.example.pharamax.dto.SessionResponseDTO;
 import com.example.pharamax.model.*;
 import com.example.pharamax.repository.MedicamentOrdonnanceRepository;
 import com.example.pharamax.repository.MedicamentStockRepository;
@@ -233,5 +230,36 @@ public class SessionServiceImplTest implements SessionServiceTest {
         }
 
         return mapToDTO(sessionRepository.save(session));
+    }
+
+
+    public List<StatJourDTO> getPatientsParJour() {
+
+        return sessionRepository.countPatientsByDay()
+                .stream()
+                .map(obj -> {
+                    StatJourDTO dto = new StatJourDTO();
+                    dto.setDate((LocalDate) obj[0]);
+                    dto.setNombrePatients((Long) obj[1]);
+                    return dto;
+                })
+                .toList();
+    }
+
+    public List<PatientArriveDTO> getPatientsParDate(LocalDate date) {
+
+        return sessionRepository.findByDateProchainRdv(date)
+                .stream()
+                .map(s -> {
+                    PatientArriveDTO dto = new PatientArriveDTO();
+
+                    dto.setNom(s.getOrdonnance().getPatient().getNom());
+                    dto.setPrenom(s.getOrdonnance().getPatient().getPrenom());
+                    dto.setDateRdv(s.getDateProchainRdv());
+                    dto.setStatut(s.getStatut().name());
+
+                    return dto;
+                })
+                .toList();
     }
 }
