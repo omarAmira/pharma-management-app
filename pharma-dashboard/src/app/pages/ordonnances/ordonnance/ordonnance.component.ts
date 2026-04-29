@@ -33,6 +33,21 @@ medicamentsStock: MedicamentStock[] = [];
 
   // ✅ Charger les médicaments du stock
   this.stockService.getMedicaments().subscribe(list => this.medicamentsStock = list);
+// ✅ Calcul automatique du RDV
+  this.ordonnanceForm.get('dateOrdonnance')?.valueChanges.subscribe(() => this.updateDateRdv());
+  this.ordonnanceForm.get('dureeTraitement')?.valueChanges.subscribe(() => this.updateDateRdv());
+}
+
+updateDateRdv(): void {
+  const dateOrdonnance = this.ordonnanceForm.get('dateOrdonnance')?.value;
+  const duree = this.ordonnanceForm.get('dureeTraitement')?.value;
+
+  if (dateOrdonnance && duree) {
+    const d = new Date(dateOrdonnance);
+    d.setMonth(d.getMonth() + duree); // ➕ ajouter les mois
+    const rdvStr = d.toISOString().split('T')[0]; // format YYYY-MM-DD
+    this.ordonnanceForm.patchValue({ dateRdv: rdvStr }, { emitEvent: false });
+  }
 }
 
   get medicaments() {
