@@ -55,4 +55,13 @@ public class SessionController {
         return ResponseEntity.ok(
                 sessionService.creerSessionManuelle(request));
     }
+
+
+    @DeleteMapping("/{sessionId}/annuler")
+    public ResponseEntity<Map<String, String>> annulerSession(@PathVariable Long sessionId) {
+        sessionService.annulerSession(sessionId);
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Session annulée et stock corrigé");
+        return ResponseEntity.ok(response);
+    }
 }

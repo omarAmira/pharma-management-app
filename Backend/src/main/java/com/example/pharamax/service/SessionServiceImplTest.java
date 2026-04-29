@@ -270,4 +270,24 @@ public class SessionServiceImplTest implements SessionServiceTest {
                 })
                 .toList();
     }
+
+
+
+    @Transactional
+    public void annulerSession(Long sessionId) {
+        SessionTraitement session = sessionRepository.findById(sessionId)
+                .orElseThrow(() -> new RuntimeException("Session introuvable"));
+
+        // 🔄 Restituer les quantités au stock
+        for (DistributionMedicament dist : session.getDistributions()) {
+            MedicamentStock stock = dist.getMedicamentStock();
+            if (stock != null) {
+                stock.setQuantiteStock(stock.getQuantiteStock() + dist.getQuantiteDonnee());
+                medicamentStockRepository.save(stock);
+            }
+        }
+
+        // 🗑️ Supprimer la session
+        sessionRepository.delete(session);
+    }
 }
