@@ -135,6 +135,36 @@
     </div>
 
   </div>
+
+<div class="id-card" id="patient-card-{{selectedPatient.id}}" *ngIf="selectedPatient">
+  <div class="id-header">
+    <img src="assets/logoSante.jpg" alt="Logo Santé" class="logo">
+    <h3>Carte Patient</h3>
+  </div>
+
+  <div class="id-body">
+    <div class="id-info">
+      <p><strong>Nom:</strong> {{ selectedPatient.nom }}</p>
+      <p><strong>Prénom:</strong> {{ selectedPatient.prenom }}</p>
+      <p><strong>Dossier:</strong> {{ selectedPatient.numeroDossier }}</p>
+      <p><strong>Expiration:</strong> {{ getExpirationDate(selectedPatient.createdAt) }}</p>
+    </div>
+
+    <div class="id-qr" *ngIf="selectedPatient.qrCode">
+      <img [src]="'data:image/png;base64,' + selectedPatient.qrCode" alt="QR Code">
+      <small>Scannez pour vérifier</small>
+    </div>
+  </div>
+</div>
+
+
+<button class="btn-primary" (click)="downloadPatientCard(selectedPatient, 'pdf')">
+  Télécharger PDF
+</button>
+<button class="btn-secondary" (click)="downloadPatientCard(selectedPatient, 'png')">
+  Télécharger PNG
+</button>
+
 </div>
     </div>
   </div>

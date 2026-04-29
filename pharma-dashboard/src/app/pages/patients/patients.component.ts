@@ -6,7 +6,8 @@ import { combineLatest, map, startWith } from 'rxjs';
 import { OrdonnanceService } from 'src/app/core/services/ordonnance.service';
 import { PatientService } from 'src/app/core/services/patient.service';
 import { Patient } from 'src/app/model/patient.model';
-
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 @Component({
   selector: 'app-patients',
   templateUrl: './patients.component.html',
@@ -106,5 +107,39 @@ addPatient(): void {
     this.openAddForm = false;
     this.newPatient = { nom: '', prenom: '', dateNaissance: '', numeroDossier: '', numeroTlf: '' };
   });
+}
+
+
+
+downloadPatientCard(patient: any, format: 'pdf' | 'png' = 'pdf'): void {
+  const element = document.getElementById('patient-card-' + patient.id);
+  if (!element) return;
+
+  html2canvas(element, { scale: 2 }).then(canvas => {
+    if (format === 'png') {
+      const link = document.createElement('a');
+      link.download = `carte-${patient.nom}-${patient.prenom}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    } else {
+      const imgData = canvas.toDataURL('image/png');
+      // Format ID-1 (carte bancaire) : 85.60 x 53.98 mm
+      const pdf = new jsPDF({
+        orientation: 'landscape',
+        unit: 'mm',
+        format: [85.60, 53.98]
+      });
+      pdf.addImage(imgData, 'PNG', 0, 0, 85.60, 53.98);
+      pdf.save(`carte-${patient.nom}-${patient.prenom}.pdf`);
+    }
+  });
+}
+
+getExpirationDate(createdAt?: string): string {
+  const date = createdAt ? new Date(createdAt) : new Date();
+  date.setFullYear(date.getFullYear() + 1);
+  return date.toLocaleDateString('fr-FR'); // format français JJ/MM/AAAA
+
+
 }
 }

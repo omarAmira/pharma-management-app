@@ -219,3 +219,87 @@
     color: #0d4f3c;
   }
 }
+
+
+.id-card {
+  width: 350px;
+  border-radius: 18px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  background: linear-gradient(135deg, #f9fff9, #e8f5e9); // fond vert très léger
+  overflow: hidden;
+  font-family: 'Segoe UI', 'Roboto', sans-serif;
+  border: 1px solid #c8e6c9;
+  position: relative;
+}
+
+/* Watermark discret en arrière-plan */
+.id-card::before {
+  content: "";
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  width: 200px;
+  height: 200px;
+  background: url('./logoSante.jpg') no-repeat center;
+  background-size: contain;
+  opacity: 0.05; // watermark transparent
+  transform: translateX(-50%);
+}
+
+.id-header {
+  background: linear-gradient(90deg, #2e7d32, #66bb6a);
+  color: #fff;
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo {
+  height: 40px;
+}
+
+.id-body {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 18px;
+  position: relative;
+  z-index: 1; // pour passer devant le watermark
+}
+
+.id-info {
+  flex: 1;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.id-info p {
+  margin: 6px 0;
+  font-weight: 500;
+  color: #2e2e2e;
+}
+
+.id-qr {
+  text-align: center;
+  margin-left: 12px;
+  background: #f1f8e9;
+  border-radius: 10px;
+  padding: 12px;
+  box-shadow: inset 0 0 6px rgba(46,125,50,0.2);
+}
+
+.id-qr img {
+  width: 100px;
+  height: 100px;
+  border: 2px solid #2e7d32;
+  border-radius: 8px;
+}
+
+.id-qr small {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  color: #2e7d32;
+  font-weight: 600;
+}
