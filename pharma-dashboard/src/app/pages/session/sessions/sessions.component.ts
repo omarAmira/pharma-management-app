@@ -193,4 +193,18 @@ onJoursChange(): void {
 removeDistribution(index: number): void {
   this.distributionsManuelles.splice(index, 1);
 }
+annulerSession(sessionId: number): void {
+  if (!sessionId) return;
+
+  const confirmation = confirm("Voulez-vous vraiment annuler cette session ?");
+  if (!confirmation) return;
+
+  this.sessionService.annulerSession(sessionId).subscribe((res) => {
+    alert(res.message);
+    this.loadSessions();
+  });
+}
+
+
+
 }

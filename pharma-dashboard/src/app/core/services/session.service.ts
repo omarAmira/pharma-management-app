@@ -4,14 +4,19 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface DistributionDTO {
-  medicamentStockId: number;
-  quantite: number;
+  medicamentStockId?: number;   // utilisé pour création
+  nomMedicament?: string;       // utilisé pour affichage
+  quantite?: number;            // utilisé pour création
+  quantiteDonnee?: number;      // utilisé pour affichage
 }
 
 export interface SessionDTO {
-   ordonnanceId: number;
+  id?: number;                  // 🔥 optionnel : backend le génère
+  ordonnanceId: number;
+  dateSession?: string;         // affichage
   joursDistribution: number;
   dateProchainRdv: string;
+  statut?: string;              // affichage
   distributions: DistributionDTO[];
 }
 
@@ -37,4 +42,9 @@ traiterArrivee(ordonnanceId: number): Observable<{ message: string }> {
   creerSessionManuelle(request: SessionDTO): Observable<SessionDTO> {
   return this.http.post<SessionDTO>(`${this.apiUrl}/manuel`, request);
 }
+
+annulerSession(sessionId: number): Observable<{ message: string }> {
+  return this.http.delete<{ message: string }>(`${this.apiUrl}/${sessionId}/annuler`);
+}
+
 }

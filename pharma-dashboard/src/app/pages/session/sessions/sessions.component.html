@@ -151,6 +151,7 @@
       <div class="sessions-actions">
         <button class="btn-primary" (click)="creerPremiereSession()">➕ Session auto</button>
         <button class="btn-secondary" (click)="traiterArrivee()">👤 Patient arrivé</button>
+        
       </div>
     </div>
 
@@ -159,22 +160,33 @@
     </div>
 
     <div class="session-grid">
-      <div *ngFor="let s of sessions" class="session-card" [ngClass]="'status-' + s.statut.toLowerCase()">
-        <div class="session-top">
-          <span class="session-id">Session #{{ s.id }}</span>
-          <span class="status-badge" [ngClass]="s.statut.toLowerCase()">{{ s.statut }}</span>
-        </div>
-        <div class="session-meta">
-          <div>📅 {{ s.dateSession }}</div>
-          <div>⏰ RDV: {{ s.dateProchainRdv }}</div>
-          <div>💊 {{ s.joursDistribution }} jours</div>
-        </div>
-        <div class="session-drugs">
-          <div *ngFor="let d of s.distributions" class="drug-chip">
-            {{ d.nomMedicament }} <strong>{{ d.quantiteDonnee }}</strong>
-          </div>
-        </div>
-      </div>
+      <div *ngFor="let s of sessions; let i = index" 
+     class="session-card" 
+     [ngClass]="'status-' + s.statut?.toLowerCase()">
+
+  <div class="session-top">
+    <span class="session-id">Session #{{ s.id }}</span>
+    <span class="status-badge" [ngClass]="s.statut?.toLowerCase()">{{ s.statut }}</span>
+  </div>
+
+  <div class="session-meta">
+    <div>📅 {{ s.dateSession }}</div>
+    <div>⏰ RDV: {{ s.dateProchainRdv }}</div>
+    <div>💊 {{ s.joursDistribution }} jours</div>
+  </div>
+
+  <div class="session-drugs">
+    <div *ngFor="let d of s.distributions" class="drug-chip">
+      {{ d.nomMedicament }} <strong>{{ d.quantiteDonnee }}</strong>
+    </div>
+  </div>
+
+  <!-- 🔥 Bouton Annuler uniquement pour la dernière session -->
+  <div class="session-actions" *ngIf="i === sessions.length - 1">
+    <button class="btn-danger" (click)="annulerSession(s.id)">❌ Annuler</button>
+  </div>
+</div>
+
     </div>
   </div>
 
