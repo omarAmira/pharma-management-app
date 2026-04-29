@@ -1,7 +1,7 @@
 package com.example.pharamax.model;
 
 public enum StatutSession {
-    EN_ATTENTE,
+    EN_AVANCE,
     EFFECTUEE,
     EN_RETARD,
     TERMINEE

@@ -51,7 +51,7 @@ public class SessionServiceImplTest implements SessionServiceTest {
         session.setJoursDistribution(joursDistribution);
         session.setDateProchainRdv(
                 ordonnance.getDateRdv().plusDays(joursDistribution));
-        session.setStatut(StatutSession.EN_ATTENTE);
+        session.setStatut(StatutSession.EN_AVANCE);
 
         genererDistribution(session);
 
@@ -73,28 +73,21 @@ public class SessionServiceImplTest implements SessionServiceTest {
                 .plusMonths(ordonnance.getDureeTraitement());
 
         if (!today.isBefore(dateFin)) {
-            derniere.setStatut(StatutSession.TERMINEE);
-            sessionRepository.save(derniere);
             return "Traitement terminé";
         }
 
-        // Vérifier l'état d'arrivée
+        // Vérifier l'état d'arrivée (⚠️ sans changer le statut)
         if (today.isBefore(derniere.getDateProchainRdv())) {
             long joursAvance = ChronoUnit.DAYS.between(today, derniere.getDateProchainRdv());
-            derniere.setStatut(StatutSession.EN_ATTENTE);
-            sessionRepository.save(derniere);
             return "Patient arrivé en avance de " + joursAvance + " jour(s)";
         } else if (today.isEqual(derniere.getDateProchainRdv())) {
-            derniere.setStatut(StatutSession.EFFECTUEE);
-            sessionRepository.save(derniere);
             return "Patient arrivé à l'heure";
         } else {
             long joursRetard = ChronoUnit.DAYS.between(derniere.getDateProchainRdv(), today);
-            derniere.setStatut(StatutSession.EN_RETARD);
-            sessionRepository.save(derniere);
             return "Patient arrivé en retard de " + joursRetard + " jour(s)";
         }
     }
+
 
     @Override
     public List<SessionResponseDTO> getSessionsByOrdonnance(Long ordonnanceId) {
@@ -193,7 +186,22 @@ public class SessionServiceImplTest implements SessionServiceTest {
         session.setDateSession(LocalDate.now());
         session.setJoursDistribution(request.getJoursDistribution());
         session.setDateProchainRdv(request.getDateProchainRdv());
-        session.setStatut(StatutSession.EFFECTUEE);
+        LocalDate today = LocalDate.now();
+
+        if (today.isEqual(request.getDateProchainRdv())) {
+            session.setStatut(StatutSession.EFFECTUEE);
+        } else if (today.isBefore(request.getDateProchainRdv())) {
+            session.setStatut(StatutSession.EN_AVANCE); // ou EN_AVANCE si tu veux différencier
+        } else {
+            session.setStatut(StatutSession.EN_RETARD);
+        }
+
+        //  Si c’est la dernière session → TERMINEE
+        LocalDate dateFin = ordonnance.getDateOrdonnance()
+                .plusMonths(ordonnance.getDureeTraitement());
+        if (!today.isBefore(dateFin)) {
+            session.setStatut(StatutSession.TERMINEE);
+        }
 
         for (DistributionRequestDTO d : request.getDistributions()) {
 
