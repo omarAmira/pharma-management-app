@@ -41,13 +41,13 @@
 
         <!-- Ligne 4 -->
         <div class="form-row">
-          <label for="unite">Unité</label>
+          <label for="unite"> Type</label>
           <select id="unite" [(ngModel)]="newMed.unite" name="unite" required>
             <option value="SIROP">Sirop</option>
             <option value="COMPRIME">Comprimé</option>
-            <option value="UI">UI</option>
-            <option value="PILULATION">Pilulation</option>
-            <option value="GOUTTES">Gouttes</option>
+            <option value="UI">ampoule</option>
+            <option value="PILULATION">pulsation</option>
+          
           </select>
         </div>
 
@@ -108,7 +108,7 @@
 
         <!-- Unité -->
         <div class="form-row">
-          <label>Unité</label>
+          <label>Type</label>
           <select [(ngModel)]="editMed.unite" name="edit_unite">
             <option>COMPRIME</option>
             <option>SIROP</option>
@@ -180,7 +180,7 @@
         <th>Médicament</th>
         <th>Stock actuel</th>
         <th>Seuil mini</th>
-        <th>Unité</th>
+        <th>Type</th>
         <th>Péremption</th>
         <th>Statut</th>
         <th>Niveau</th>
