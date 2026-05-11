@@ -29,4 +29,7 @@ export class StockService {
   updateMedicament(id: number, data: any) {
   return this.http.put(`${this.apiUrl}/${id}`, data);
 }
+getStockHistorique(): Observable<any[]> {
+  return this.http.get<any[]>('http://localhost:8087/medicaments-stock/historique');
+}
 }

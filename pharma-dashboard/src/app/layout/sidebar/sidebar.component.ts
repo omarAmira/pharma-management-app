@@ -25,7 +25,7 @@ export class SidebarComponent {
 
   managementNav: NavItem[] = [
     { icon: 'shopping_cart', label: 'Commandes', route: '/orders' },
-    { icon: 'factory', label: 'Fournisseurs', route: '/suppliers' },
+    { icon: 'factory', label: 'trace', route: '/trace' },
     { icon: 'receipt_long', label: 'Ordonnances', route: '/ordonnances' },
   ];
 

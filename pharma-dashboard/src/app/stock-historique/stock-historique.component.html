@@ -1,0 +1,64 @@
+<div class="pg-head">
+  <div>
+    <h2>Historique des Actions Stock</h2>
+    <p>{{ logs.length }} actions enregistrées</p>
+  </div>
+  <button class="btn-primary" (click)="loadHistorique()">
+    <mat-icon>refresh</mat-icon> Actualiser
+  </button>
+</div>
+
+<!-- Filters -->
+<div class="filter-bar">
+  <div class="fb-search">
+    <mat-icon>search</mat-icon>
+    <input 
+      type="text" 
+      [(ngModel)]="searchText" 
+      (ngModelChange)="filterLogs()" 
+      placeholder="Rechercher un médicament ou un détail..." />
+  </div>
+
+  <select class="fb-select" [(ngModel)]="filterAction" (ngModelChange)="filterLogs()">
+    <option value="">Toutes les actions</option>
+    <option value="ADD">Ajouts</option>
+    <option value="UPDATE">Modifications</option>
+    <option value="DELETE">Suppressions</option>
+  </select>
+
+  <button class="c-action" (click)="resetFilters()">Réinitialiser</button>
+</div>
+
+<!-- Table Historique -->
+<div class="card">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Date & Heure</th>
+        <th>Action</th>
+        <th>Médicament</th>
+        <th>Détails</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let log of filteredLogs">
+        <td>{{ log.dateFormatted }}</td>
+        <td>
+          <span class="badge" [ngClass]="log.actionClass">
+            {{ log.actionLabel }}
+          </span>
+        </td>
+        <td><strong>{{ log.nomMedicament }}</strong></td>
+        <td class="details-col">{{ log.details }}</td>
+      </tr>
+
+      <!-- Ligne vide -->
+      <tr *ngIf="filteredLogs.length === 0">
+        <td colspan="4" class="empty-row">
+          <mat-icon>history_off</mat-icon>
+          <span>Aucune action trouvée</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

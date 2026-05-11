@@ -21,7 +21,8 @@ import { SessionsComponent } from './pages/session/sessions/sessions.component';
 import { ScannerModalComponent } from './pages/scanner-modals/scanner-modals.component';
 import { MatDialogModule }  from '@angular/material/dialog';
 import { OrdonnanceByPatientComponent } from './pages/ordonnance-by-patient/ordonnance-by-patient.component';
-import { OrdonnanceListeComponent } from './ordonnance-liste/ordonnance-liste.component'; // ✅ ajouter
+import { OrdonnanceListeComponent } from './ordonnance-liste/ordonnance-liste.component';
+import { StockHistoriqueComponent } from './stock-historique/stock-historique.component'; // ✅ ajouter
 @NgModule({
   declarations: [
     AppComponent,
@@ -35,6 +36,7 @@ import { OrdonnanceListeComponent } from './ordonnance-liste/ordonnance-liste.co
     ScannerModalComponent,
     OrdonnanceByPatientComponent,
     OrdonnanceListeComponent,
+    StockHistoriqueComponent,
   ],
   imports: [
     BrowserModule,
