@@ -1,0 +1,143 @@
+<div class="pg-head">
+  <div>
+    <h2>Liste des Ordonnances</h2>
+    <p>{{ ordonnances.length }} ordonnance(s) enregistrée(s)</p>
+  </div>
+  <button class="btn-primary" (click)="creerNouvelleOrdonnance()">
+    <mat-icon>add</mat-icon> Nouvelle Ordonnance
+  </button>
+</div>
+
+<!-- Stats Row -->
+<div class="stats-row">
+  <div class="stat-card sc-g">
+    <div class="sc-icon"><mat-icon>receipt_long</mat-icon></div>
+    <div class="sc-val">{{ ordonnances.length }}</div>
+    <div class="sc-lbl">Total Ordonnances</div>
+  </div>
+  <div class="stat-card sc-b">
+    <div class="sc-icon"><mat-icon>today</mat-icon></div>
+    <div class="sc-val">{{ getOrdonnancesToday() }}</div>
+    <div class="sc-lbl">RDV Aujourd'hui</div>
+  </div>
+</div>
+
+<!-- Filters -->
+<div class="filter-bar">
+  <div class="fb-search">
+    <mat-icon>search</mat-icon>
+    <input type="text" [(ngModel)]="searchText" placeholder="Rechercher patient ou ordonnance..." />
+  </div>
+  <button class="c-action" (click)="resetFilters()">Réinitialiser</button>
+</div>
+
+<!-- Table des Ordonnances -->
+<div class="card">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>N° Ordonnance</th>
+        <th>Patient</th>
+        <th>Date Ordonnance</th>
+        <th>RDV</th>
+        <th>Durée (mois)</th>
+        <th>Médicaments</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let o of filteredOrdonnances" (click)="showDetails(o)">
+        <td><strong>#{{ o.id }}</strong></td>
+        <td>{{ o.patient?.nom }} {{ o.patient?.prenom }}</td>
+        <td>{{ o.dateOrdonnance }}</td>
+        <td>{{ o.dateRdv }}</td>
+        <td>{{ o.dureeTraitement }}</td>
+        <td>
+          <span class="med-count">{{ o.medicaments?.length || 0 }} médicament(s)</span>
+        </td>
+        <td>
+          <div class="tbl-actions">
+            <button class="tbl-btn edit" (click)="editOrdonnance(o); $event.stopPropagation()">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button class="tbl-btn danger" (click)="deleteOrdonnance(o.id); $event.stopPropagation()">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </td>
+      </tr>
+
+      <tr *ngIf="filteredOrdonnances.length === 0">
+        <td colspan="7" class="empty-row">
+          <mat-icon>search_off</mat-icon>
+          <span>Aucune ordonnance trouvée</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal / Drawer pour Détails & Modification -->
+<div class="drawer-overlay" [class.open]="selectedOrdonnance" (click)="closeModal()">
+  <div class="drawer" [class.open]="selectedOrdonnance" (click)="$event.stopPropagation()">
+    
+    <div class="drawer-head">
+      <h3>{{ isEditing ? 'Modifier' : 'Détails' }} Ordonnance #{{ selectedOrdonnance?.id }}</h3>
+      <button class="d-close" (click)="closeModal()"><mat-icon>close</mat-icon></button>
+    </div>
+
+    <div class="drawer-body">
+
+      <!-- Mode Détails -->
+      <div *ngIf="!isEditing">
+        <div class="d-section">
+          <h4>Informations Générales</h4>
+          <div class="d-row"><span>Patient</span><strong>{{ selectedOrdonnance?.patient?.nom }} {{ selectedOrdonnance?.patient?.prenom }}</strong></div>
+          <div class="d-row"><span>Date Ordonnance</span><strong>{{ selectedOrdonnance?.dateOrdonnance }}</strong></div>
+          <div class="d-row"><span>Prochain RDV</span><strong>{{ selectedOrdonnance?.dateRdv }}</strong></div>
+          <div class="d-row"><span>Durée Traitement</span><strong>{{ selectedOrdonnance?.dureeTraitement }} mois</strong></div>
+        </div>
+
+        <div class="d-section">
+          <h4>Médicaments prescrits</h4>
+          <ul class="med-list">
+            <li *ngFor="let m of selectedOrdonnance?.medicaments">
+              {{ m.medicamentStock?.nom || m.nomManuel }} — <strong>{{ m.posologie }}</strong>
+            </li>
+          </ul>
+        </div>
+
+        <button class="btn-primary full-width" (click)="editOrdonnance(selectedOrdonnance)">Modifier cette ordonnance</button>
+      </div>
+
+      <!-- Mode Édition -->
+      <div *ngIf="isEditing">
+        <div class="form-row">
+          <label>Date Ordonnance</label>
+          <input type="date" [(ngModel)]="editForm.dateOrdonnance" />
+        </div>
+        <div class="form-row">
+          <label>Date RDV</label>
+          <input type="date" [(ngModel)]="editForm.dateRdv" />
+        </div>
+        <div class="form-row">
+          <label>Durée de traitement (mois)</label>
+          <input type="number" [(ngModel)]="editForm.dureeTraitement" />
+        </div>
+
+        <h4>Posologies</h4>
+        <div class="med-edit-list">
+          <div *ngFor="let med of editForm.medicaments; let i = index" class="med-edit-row">
+            <strong>{{ selectedOrdonnance.medicaments[i]?.medicamentStock?.nom || selectedOrdonnance.medicaments[i]?.nomManuel }}</strong>
+            <input type="number" [(ngModel)]="med.posologie" style="width: 90px;" />
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-primary" (click)="saveUpdate()">Enregistrer</button>
+          <button class="btn-secondary" (click)="closeModal()">Annuler</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

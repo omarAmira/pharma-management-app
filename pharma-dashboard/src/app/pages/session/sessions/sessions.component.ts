@@ -11,6 +11,8 @@ import { StockService } from 'src/app/core/services/stock.service';
   styleUrls: ['./sessions.component.scss'],
 })
 export class SessionsComponent implements OnInit {
+
+  private sessionAnnuleeTemporaire: any = null;
   ordonnanceId!: number;
   sessions: SessionDTO[] = [];
   ordonnance: any; // détails ordonnance enrichis
@@ -196,13 +198,58 @@ removeDistribution(index: number): void {
 annulerSession(sessionId: number): void {
   if (!sessionId) return;
 
+  // 🔥 Trouver la session avant de l'annuler
+  const sessionToCancel = this.sessions.find(s => s.id === sessionId);
+  if (!sessionToCancel) return;
+
   const confirmation = confirm("Voulez-vous vraiment annuler cette session ?");
   if (!confirmation) return;
 
-  this.sessionService.annulerSession(sessionId).subscribe((res) => {
-    alert(res.message);
-    this.loadSessions();
+  // Sauvegarder les données pour restaurer le formulaire
+  this.sessionAnnuleeTemporaire = { ...sessionToCancel };
+
+  this.sessionService.annulerSession(sessionId).subscribe({
+    next: (res) => {
+      alert(res.message);
+      this.loadSessions();           // Recharger la liste
+
+      // 🔥 Restaurer le formulaire avec les données de la session annulée
+      this.restaurerFormulaireDepuisSession(this.sessionAnnuleeTemporaire);
+    },
+    error: (err) => {
+      console.error(err);
+      alert("Erreur lors de l'annulation");
+    }
   });
+}
+restaurerFormulaireDepuisSession(session: any): void {
+  if (!session) return;
+
+  // Remplir les champs principaux
+  this.joursDistributionManuel = session.joursDistribution || 7;
+  this.dateProchainRdvManuel = session.dateProchainRdv 
+    ? session.dateProchainRdv.split('T')[0] 
+    : '';
+
+  // Préparer les distributions pour le formulaire
+  this.distributionsManuelles = session.distributions.map((d: any) => {
+    const stockMatch = this.medicamentsStock.find(m => 
+      m.nom.toLowerCase() === (d.nomMedicament || '').toLowerCase()
+    );
+
+    return {
+      searchText: d.nomMedicament || '',
+      selectedMedicament: stockMatch || null,
+      medicamentStockId: d.medicamentStockId || (stockMatch ? stockMatch.id : null),
+      quantite: d.quantiteDonnee || 1,
+      filteredMedicaments: [],
+      ordonnanceMedicament: null // pas nécessaire ici
+    };
+  });
+
+  // Recalculer la date et les quantités si besoin
+  this.calculerDateRdv();
+  // this.calculerQuantites(); // optionnel selon ton besoin
 }
 
 

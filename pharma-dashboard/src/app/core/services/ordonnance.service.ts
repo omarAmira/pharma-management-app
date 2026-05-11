@@ -19,4 +19,13 @@ export class OrdonnanceService {
   getOrdonnancesByPatient(patientId: number): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/patient/${patientId}`);
   }
+
+  // ⭐ NOUVEAU : Mise à jour
+  updateOrdonnance(id: number, dto: any): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/${id}`, dto);
+  }
+
+getAllOrdonnances(): Observable<any[]> {
+  return this.http.get<any[]>(this.apiUrl);
+}
 }

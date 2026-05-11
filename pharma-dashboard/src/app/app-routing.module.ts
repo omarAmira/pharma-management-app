@@ -7,6 +7,7 @@ import { PatientsComponent }  from './pages/patients/patients.component';
 import { OrdonnanceComponent } from './pages/ordonnances/ordonnance/ordonnance.component';
 import { SessionsComponent } from './pages/session/sessions/sessions.component';
 import { OrdonnanceByPatientComponent } from './pages/ordonnance-by-patient/ordonnance-by-patient.component';
+import { OrdonnanceListeComponent } from './ordonnance-liste/ordonnance-liste.component';
 
 
 const routes: Routes = [
@@ -14,6 +15,7 @@ const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent },
   { path: 'stock',     component: StockComponent },
   { path: 'patients',  component: PatientsComponent },
+   { path: 'ordonnances',  component: OrdonnanceListeComponent },
   { path: 'ordonnances/create/:id', component: OrdonnanceComponent },
   { path: 'sessions/:id', component: SessionsComponent },  //id de l'ordonnance
   { path: 'patients/:id/ordonnances', component: OrdonnanceByPatientComponent },
