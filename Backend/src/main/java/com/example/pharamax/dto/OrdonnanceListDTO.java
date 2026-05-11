@@ -11,6 +11,7 @@ public class OrdonnanceListDTO {
     private String sourceOrdonnance;
 
     private Integer nombreMedicaments;
+    private String patientNom;
 
     public Long getId() {
         return id;
@@ -58,5 +59,13 @@ public class OrdonnanceListDTO {
 
     public void setNombreMedicaments(Integer nombreMedicaments) {
         this.nombreMedicaments = nombreMedicaments;
+    }
+
+    public String getPatientNom() {
+        return patientNom;
+    }
+
+    public void setPatientNom(String patientNom) {
+        this.patientNom = patientNom;
     }
 }

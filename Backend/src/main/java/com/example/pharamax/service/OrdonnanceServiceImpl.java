@@ -102,5 +102,54 @@ public class OrdonnanceServiceImpl implements OrdonnanceService {
 
         }).toList();
     }
+    @Override
+    public Ordonnance updateOrdonnance(Long id, OrdonnanceRequestDTO dto) {
+
+        Ordonnance ordonnance = ordonnanceRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Ordonnance introuvable : " + id));
+
+        // Mise à jour du patient uniquement si patientId est fourni
+        if (dto.getPatientId() != null) {
+            Patient patient = patientRepository.findById(dto.getPatientId())
+                    .orElseThrow(() -> new RuntimeException("Patient introuvable : " + dto.getPatientId()));
+            ordonnance.setPatient(patient);
+        }
+
+        ordonnance.setSourceOrdonnance(dto.getSourceOrdonnance());
+        ordonnance.setDateOrdonnance(dto.getDateOrdonnance());
+        ordonnance.setDateRdv(dto.getDateRdv());
+        ordonnance.setDureeTraitement(dto.getDureeTraitement());
+
+        // Mise à jour des médicaments
+        ordonnance.getMedicaments().clear();
+
+        for (MedicamentOrdonnanceRequestDTO medDto : dto.getMedicaments()) {
+            MedicamentOrdonnance medOrd = new MedicamentOrdonnance();
+            medOrd.setOrdonnance(ordonnance);
+            medOrd.setPosologie(medDto.getPosologie());
+
+            if (medDto.getMedicamentStockId() != null) {
+                MedicamentStock stock = medicamentStockRepository.findById(medDto.getMedicamentStockId())
+                        .orElseThrow(() -> new RuntimeException("Médicament stock introuvable"));
+                medOrd.setMedicamentStock(stock);
+            } else {
+                medOrd.setNomManuel(medDto.getNomManuel());
+            }
+
+            ordonnance.getMedicaments().add(medOrd);
+        }
+
+        return ordonnanceRepository.save(ordonnance);
+    }
+    @Override
+    public List<Ordonnance> getAllOrdonnances() {
+        return ordonnanceRepository.findAll();
+    }
+
+    // Nouvelle méthode pour récupérer avec les relations
+    @Override
+    public List<Ordonnance> getOrdonnancesByPatientIdFull(Long patientId) {
+        return ordonnanceRepository.findByPatientId(patientId);
+    }
 
 }

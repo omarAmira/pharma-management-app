@@ -27,7 +27,18 @@ public class OrdonnanceController {
 
         return ResponseEntity.ok(ordonnance);
     }
+    @PutMapping("/{id}")
+    public ResponseEntity<Ordonnance> updateOrdonnance(
+            @PathVariable Long id,
+            @RequestBody OrdonnanceRequestDTO dto) {
 
+        if (id == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        Ordonnance ordonnance = ordonnanceService.updateOrdonnance(id, dto);
+        return ResponseEntity.ok(ordonnance);
+    }
     @GetMapping("/{id}")
     public ResponseEntity<Ordonnance> getOrdonnance(@PathVariable Long id) {
         Ordonnance ordonnance = ordonnanceService.getOrdonnanceById(id);
@@ -38,4 +49,9 @@ public class OrdonnanceController {
     public ResponseEntity<List<OrdonnanceListDTO>> getByPatient(@PathVariable Long patientId) {
         return ResponseEntity.ok(ordonnanceService.getOrdonnancesByPatientId(patientId));
     }
+    @GetMapping
+    public ResponseEntity<List<Ordonnance>> getAllOrdonnances() {   // ← Changé
+        return ResponseEntity.ok(ordonnanceService.getAllOrdonnances());
+    }
+
 }
