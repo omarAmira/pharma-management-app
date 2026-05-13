@@ -290,4 +290,26 @@ public class SessionServiceImplTest implements SessionServiceTest {
         // 🗑️ Supprimer la session
         sessionRepository.delete(session);
     }
+
+
+    public List<RapportMedicamentJourDTO> getRapportMedicamentsEntreDeuxDates(
+            LocalDate debut,
+            LocalDate fin) {
+
+        return sessionRepository
+                .getRapportMedicamentsEntreDeuxDates(debut, fin)
+                .stream()
+                .map(obj -> {
+
+                    RapportMedicamentJourDTO dto =
+                            new RapportMedicamentJourDTO();
+
+                    dto.setDate((LocalDate) obj[0]);
+                    dto.setMedicament((String) obj[1]);
+                    dto.setQuantiteTotale((Long) obj[2]);
+
+                    return dto;
+                })
+                .toList();
+    }
 }

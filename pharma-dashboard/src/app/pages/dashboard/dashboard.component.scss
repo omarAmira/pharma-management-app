@@ -236,3 +236,62 @@
   border-color: #ffb300;
   color: #1f1f1f;
 }
+
+
+
+
+
+
+
+
+
+
+
+.flash-container {
+  background: #1b9956;
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 300px;
+
+  .date-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+
+    button {
+      background: #39b70f;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+  }
+
+  .list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .item {
+      display: flex;
+      justify-content: space-between;
+      background: #f7f7f7;
+      padding: 10px;
+      border-radius: 6px;
+      border-left: 3px solid #4caf50;
+
+      .name {
+        font-weight: bold;
+         color: #000000;
+      }
+
+      .qty {
+        color: #000000;
+        font-weight: bold;
+      }
+    }
+  }
+}

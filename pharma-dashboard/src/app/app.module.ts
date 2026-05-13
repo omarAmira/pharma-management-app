@@ -22,7 +22,8 @@ import { ScannerModalComponent } from './pages/scanner-modals/scanner-modals.com
 import { MatDialogModule }  from '@angular/material/dialog';
 import { OrdonnanceByPatientComponent } from './pages/ordonnance-by-patient/ordonnance-by-patient.component';
 import { OrdonnanceListeComponent } from './ordonnance-liste/ordonnance-liste.component';
-import { StockHistoriqueComponent } from './stock-historique/stock-historique.component'; // ✅ ajouter
+import { StockHistoriqueComponent } from './stock-historique/stock-historique.component';
+import { RapportPdfComponent } from './pages/rapport-pdf/rapport-pdf.component'; // ✅ ajouter
 @NgModule({
   declarations: [
     AppComponent,
@@ -37,6 +38,7 @@ import { StockHistoriqueComponent } from './stock-historique/stock-historique.co
     OrdonnanceByPatientComponent,
     OrdonnanceListeComponent,
     StockHistoriqueComponent,
+    RapportPdfComponent,
   ],
   imports: [
     BrowserModule,

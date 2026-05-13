@@ -9,6 +9,11 @@ export interface DistributionDTO {
   quantite?: number;            // utilisé pour création
   quantiteDonnee?: number;      // utilisé pour affichage
 }
+export interface RapportMedicamentJourDTO {
+  date: string;
+  medicament: string;
+  quantiteTotale: number;
+}
 
 export interface SessionDTO {
   id?: number;                  // 🔥 optionnel : backend le génère
@@ -45,6 +50,27 @@ traiterArrivee(ordonnanceId: number): Observable<{ message: string }> {
 
 annulerSession(sessionId: number): Observable<{ message: string }> {
   return this.http.delete<{ message: string }>(`${this.apiUrl}/${sessionId}/annuler`);
+}
+
+
+
+telechargerRapportPdf(
+  debut: string,
+  fin: string
+): Observable<Blob> {
+
+  return this.http.get(
+    `${this.apiUrl}/rapport/medicaments/pdf?debut=${debut}&fin=${fin}`,
+    {
+      responseType: 'blob'
+    }
+  );
+}
+
+getRapportParJour(date: string): Observable<RapportMedicamentJourDTO[]> {
+  return this.http.get<RapportMedicamentJourDTO[]>(
+    `${this.apiUrl}/rapport/medicaments/jour?date=${date}`
+  );
 }
 
 }

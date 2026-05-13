@@ -1,0 +1,42 @@
+<div class="rapport-container">
+
+  <h2>Rapport des Médicaments</h2>
+
+  <p>
+    Sélectionnez une période afin de générer
+    et télécharger le rapport PDF.
+  </p>
+
+  <div class="form-group">
+
+    <label>Date début</label>
+
+    <input
+      type="date"
+      [(ngModel)]="debut"
+      class="form-control"
+    >
+  </div>
+
+  <div class="form-group">
+
+    <label>Date fin</label>
+
+    <input
+      type="date"
+      [(ngModel)]="fin"
+      class="form-control"
+    >
+  </div>
+
+  <button
+    (click)="telechargerPdf()"
+    [disabled]="loading"
+    class="btn btn-primary"
+  >
+
+    {{ loading ? 'Génération...' : 'Télécharger PDF' }}
+
+  </button>
+
+</div>

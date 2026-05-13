@@ -30,7 +30,7 @@ export class SidebarComponent {
   ];
 
   systemNav: NavItem[] = [
-    { icon: 'bar_chart', label: 'Rapports', route: '/reports' },
+    { icon: 'bar_chart', label: 'Rapports', route: '/Rapport' },
     { icon: 'settings', label: 'Paramètres', route: '/settings' },
   ];
 }

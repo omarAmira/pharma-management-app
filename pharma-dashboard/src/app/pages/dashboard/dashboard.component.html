@@ -150,47 +150,51 @@
 
   <!-- Right column -->
   <div class="col-stack">
-      <!-- Quick Actions -->
-    <div class="card">
-      <div class="card-head"><h2>Actions rapides</h2></div>
-      <div class="qa-list">
-        <button class="qa-btn">
-          <mat-icon>add_circle_outline</mat-icon> Nouvelle vente
-        </button>
-        <button class="qa-btn" (click)="router.navigate(['/prescriptions'])">
-          <mat-icon>receipt_long</mat-icon> Créer ordonnance
-        </button>
-        <button class="qa-btn" (click)="router.navigate(['/orders'])">
-          <mat-icon>shopping_cart</mat-icon> Passer commande
-        </button>
-        <button class="qa-btn" (click)="router.navigate(['/reports'])">
-          <mat-icon>bar_chart</mat-icon> Générer rapport
-        </button>
-      </div>
+  
+
+      <div class="flash-container">
+
+  <!-- HEADER DATE -->
+  <div class="date-bar">
+
+    <button (click)="prevDay()">⮜</button>
+
+    <h2>{{ currentDate | date:'yyyy-MM-dd' }}</h2>
+
+    <button (click)="nextDay()">➤</button>
+
+  </div>
+  
+
+  <!-- CONTENT -->
+  <div *ngIf="loading">Chargement...</div>
+
+  <div *ngIf="!loading && data.length === 0">
+    Aucun médicament distribué
+  </div>
+
+  <div class="list">
+
+    <div class="item" *ngFor="let d of data">
+
+      <div class="name">{{ d.medicament }}</div>
+
+      <div class="qty">{{ d.quantiteTotale }}</div>
+
     </div>
 
-    <!-- Activity Feed -->
-    <div class="card">
-      <div class="card-head">
-        <h2>Activité récente</h2>
-        <button class="c-action">Filtrer</button>
-      </div>
-      <div class="act-list">
-        <div class="act-item" *ngFor="let a of activities; last as isLast">
-          <div class="act-line-wrap">
-            <div class="act-dot" [style.background]="a.color"></div>
-            <div class="act-line" *ngIf="!isLast"></div>
-          </div>
-          <div class="act-body">
-            <div class="act-t">{{ a.title }}</div>
-            <div class="act-s">{{ a.sub }}</div>
-          </div>
-          <div class="act-tm">{{ a.time }}</div>
-        </div>
-      </div>
-    </div>
+  </div>
+
+</div>
 
   
 
   </div>
+
+
+
+
+
+
+
 </div>

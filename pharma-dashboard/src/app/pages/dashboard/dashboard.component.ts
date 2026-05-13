@@ -6,6 +6,8 @@ import { StockService } from '../../core/services/stock.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ScannerModalComponent } from '../scanner-modals/scanner-modals.component';
 import { DashboardService, StatJourDTO, PatientArriveDTO } from '../../core/services/dashboard.service';
+import { SessionService } from 'src/app/core/services/session.service';
+
 // Register all Chart.js components
 Chart.register(...registerables);
 
@@ -25,6 +27,9 @@ export interface Activity {
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
+  currentDate: Date = new Date();
+  data: any[] = [];
+  loading = false;
 
 calendarDays: any[] = [];
 calendarMap: Map<string, number> = new Map();
@@ -53,10 +58,11 @@ today: string = '';
 
   private chart: Chart | null = null;
 
-  constructor(private stockService: StockService, public router: Router, private dialog: MatDialog,  private dashboardService: DashboardService
+  constructor(private stockService: StockService, public router: Router, private dialog: MatDialog,  private dashboardService: DashboardService,private service: SessionService
 ) {}
 
 ngOnInit(): void {
+   this.loadData();
   const now = new Date();
 
   this.today = now.toISOString().split('T')[0]; // ✅ plus fiable
@@ -214,4 +220,35 @@ nextMonth(): void {
 
   this.buildCalendar(this.statsParJour);
 }
+
+
+
+
+//flashscore 
+ formatDate(date: Date): string {
+    return date.toISOString().split('T')[0];
+  }
+
+  loadData() {
+    this.loading = true;
+
+    this.service.getRapportParJour(this.formatDate(this.currentDate))
+      .subscribe({
+        next: (res) => {
+          this.data = res;
+          this.loading = false;
+        },
+        error: () => this.loading = false
+      });
+  }
+
+  prevDay() {
+    this.currentDate.setDate(this.currentDate.getDate() - 1);
+    this.loadData();
+  }
+
+  nextDay() {
+    this.currentDate.setDate(this.currentDate.getDate() + 1);
+    this.loadData();
+  }
 }
